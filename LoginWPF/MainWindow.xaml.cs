@@ -125,8 +125,7 @@ namespace LoginWPF
                 System.Windows.Forms.MessageBox.Show(ex.Message); //это можно в логи для сисадмина
                 return;
             }
-
-
+            
             PasswordConiform coniform = new(msg);
             if (coniform.ShowDialog() == true)
             {
