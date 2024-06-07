@@ -8,29 +8,12 @@ using SrcChess2.Core;
 
 namespace SrcChess2 {
 
-    /// <summary>
-    /// Transfer object setting from/to the properties setting
-    /// </summary>
     internal class SettingAdaptor {
 
-        /// <summary>
-        /// Ctor
-        /// </summary>
-        /// <param name="settings"> Properties setting</param>
         public SettingAdaptor(Properties.Settings settings) => Settings = settings;
 
-        /// <summary>
-        /// Settings
-        /// </summary>
         public Properties.Settings Settings { get; private set; }
 
-        /// <summary>
-        /// Convert a color name to a color
-        /// </summary>
-        /// <param name="colorName"> Name of the color or hexa representation of the color</param>
-        /// <returns>
-        /// Color
-        /// </returns>
         private static Color NameToColor(string colorName) {
             Color   retVal;
 
@@ -43,10 +26,6 @@ namespace SrcChess2 {
             return (retVal);    
         }
 
-        /// <summary>
-        /// Load the FICS connection setting from the properties setting
-        /// </summary>
-        /// <param name="ficsSetting"> FICS connection setting</param>
         public void LoadFicsConnectionSetting(FicsConnectionSetting ficsSetting) {
             ficsSetting.HostName  = Settings.FICSHostName;
             ficsSetting.HostPort  = Settings.FICSHostPort;
@@ -54,20 +33,11 @@ namespace SrcChess2 {
             ficsSetting.Anonymous = string.Compare(Settings.FICSUserName, "guest", true) == 0;
         }
 
-        /// <summary>
-        /// Save the connection settings to the property setting
-        /// </summary>
-        /// <param name="ficsSetting">  Copy the FICS connection setting to the properties setting</param>
         public void SaveFicsConnectionSetting(FicsConnectionSetting ficsSetting) {
             Settings.FICSHostName = ficsSetting.HostName;
             Settings.FICSHostPort = ficsSetting.HostPort;
             Settings.FICSUserName = ficsSetting.Anonymous ? "Guest" : ficsSetting.UserName;
         }
-
-        /// <summary>
-        /// Load the chess board control settings from the property setting
-        /// </summary>
-        /// <param name="chessCtl"> Chess board control</param>
         public void LoadChessBoardCtl(ChessBoardControl chessCtl) {
             chessCtl.LiteCellColor   = NameToColor(Settings.LiteCellColor);
             chessCtl.DarkCellColor   = NameToColor(Settings.DarkCellColor);
@@ -76,10 +46,6 @@ namespace SrcChess2 {
             chessCtl.MoveFlashing    = Settings.FlashPiece;
         }
 
-        /// <summary>
-        /// Save the chess board control settings to the property setting
-        /// </summary>
-        /// <param name="chessCtl"> Chess board control</param>
         public void SaveChessBoardCtl(ChessBoardControl chessCtl) {
             Settings.WhitePieceColor = chessCtl.WhitePieceColor.ToString();
             Settings.BlackPieceColor = chessCtl.BlackPieceColor.ToString();
@@ -88,11 +54,6 @@ namespace SrcChess2 {
             Settings.FlashPiece      = chessCtl.MoveFlashing;
         }
 
-        /// <summary>
-        /// Load main window settings from the property setting
-        /// </summary>
-        /// <param name="mainWnd">      Main window</param>
-        /// <param name="pieceSetList"> List of available piece sets</param>
         public void LoadMainWindow(MainWindow mainWnd, SortedList<string,PieceSet> pieceSetList) {
             mainWnd.m_colorBackground = NameToColor(Settings.BackgroundColor);
             mainWnd.Background        = new SolidColorBrush(mainWnd.m_colorBackground);
@@ -113,10 +74,6 @@ namespace SrcChess2 {
             mainWnd.m_puzzleMasks[1] = Settings.PuzzleDoneHigh;
         }
 
-        /// <summary>
-        /// Save main window settings from the property setting
-        /// </summary>
-        /// <param name="mainWnd"> Main window</param>
         public void SaveMainWindow(MainWindow mainWnd) {
             Settings.BackgroundColor = mainWnd.m_colorBackground.ToString();
             Settings.PieceSet        = mainWnd.PieceSet?.Name ?? "???";
@@ -129,11 +86,6 @@ namespace SrcChess2 {
             Settings.PuzzleDoneHigh  = mainWnd.m_puzzleMasks[1];
         }
 
-        /// <summary>
-        /// Load search setting from property settings
-        /// </summary>
-        /// <param name="boardEvalUtil">      Board evaluation utility</param>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
         public void LoadSearchMode(BoardEvaluationUtil boardEvalUtil, out ChessSearchSetting chessSearchSetting) {
             int                                       transTableSize;
             int                                       transTableEntryCount;
@@ -181,10 +133,6 @@ namespace SrcChess2 {
             chessSearchSetting   = new ChessSearchSetting(searchEngineSetting, whiteBoardEvaluation, blackBoardEvaluation, bookMode, difficultyLevel);
         }
 
-        /// <summary>
-        /// Save the search mode to properties setting
-        /// </summary>
-        /// <param name="chessBoardSetting"> Chess board setting</param>
         public void SaveSearchMode(ChessSearchSetting chessSearchSetting) {
             SearchOption searchOption = chessSearchSetting.SearchOption; 
 
@@ -203,22 +151,10 @@ namespace SrcChess2 {
             Settings.BlackBoardEval       = chessSearchSetting.BlackBoardEvaluator?.Name ?? "???";
         }
 
-        /// <summary>
-        /// Load move viewer setting from properties setting
-        /// </summary>
-        /// <param name="moveViewer">   Move viewer</param>
         public void LoadMoveViewer(MoveViewer moveViewer) => moveViewer.DisplayMode  = (Settings.MoveNotation == 0) ? MoveViewer.ViewerDisplayMode.MovePos : MoveViewer.ViewerDisplayMode.Pgn;
 
-        /// <summary>
-        /// Save move viewer setting to properties setting
-        /// </summary>
-        /// <param name="moveViewer">   Move viewer</param>
         public void SaveMoveViewer(MoveViewer moveViewer) => Settings.MoveNotation = (moveViewer.DisplayMode == MoveViewer.ViewerDisplayMode.MovePos) ? 0 : 1;
 
-        /// <summary>
-        /// Load FICS search criteria from properties setting
-        /// </summary>
-        /// <param name="searchCriteria">   Search criteria</param>
         public void LoadFICSSearchCriteria(SearchCriteria searchCriteria) {
             searchCriteria.PlayerName        = Settings.FICSSPlayerName;
             searchCriteria.BlitzGame         = Settings.FICSSBlitz;
@@ -235,10 +171,6 @@ namespace SrcChess2 {
             searchCriteria.MoveTimeOut       = SearchCriteria.CnvToNullableIntValue(Settings.FICSMoveTimeOut);
         }
 
-        /// <summary>
-        /// Save FICS search criteria to properties setting
-        /// </summary>
-        /// <param name="searchCriteria">   Search criteria</param>
         public void SaveFicsSearchCriteria(SearchCriteria searchCriteria) {
             Settings.FICSSPlayerName        = searchCriteria.PlayerName;
             Settings.FICSSBlitz             = searchCriteria.BlitzGame;

@@ -10,74 +10,28 @@ using SrcChess2.Core;
 using SrcChess2.PgnParsing;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Utility class to help handling PGN files. Help filtering PGN files or creating one from an existing board
-    /// </summary>
     public static class PgnUtil {
 
-        /// <summary>
-        /// Used when creating a PGN move
-        /// </summary>
         [Flags]
         private enum PgnAmbiguity {
-            /// <summary>No ambiguity in the move. Can use short notation</summary>
             NotFound         = 0,
-            /// <summary>An ambiguity has been found. More than one move can be found if using short notation</summary>
             Found            = 1,
-            /// <summary>Column must be specified to remove ambiguity</summary>
             ColMustBeSpecify = 2,
-            /// <summary>Row must be specified to remove ambiguity</summary>
             RowMustBeSpecify = 4
         }
-        
-        /// <summary>Information use to filter a PGN file</summary>
+
         public class FilterClause {
-            /// <summary>All ELO rating included if true</summary>
             public  bool                        IsAllRanges { get; set; }
-            /// <summary>Includes unrated games if true</summary>
             public  bool                        IncludesUnrated { get; set; }
-            /// <summary>If not all ELO rating included, hash of all ELO which must be included. Each value represent a range (value, value+99)</summary>
             public  Dictionary<int, int>?       HashRanges { get; set; }
-            /// <summary>All players included if true</summary>
             public  bool                        IncludeAllPlayers { get; set; }
-            /// <summary>Hash of all players to include if not all included</summary>
             public  Dictionary<string,string?>? HashPlayerList { get; set; }
-            /// <summary>Includes all ending if true</summary>
             public  bool                        IncludeAllEnding { get; set; }
-            /// <summary>true to include game winned by white player</summary>
             public  bool                        IncludeWhiteWinningEnding { get; set; }
-            /// <summary>true to include game winned by black player</summary>
             public  bool                        IncludeBlackWinningEnding { get; set; }
-            /// <summary>true to include draws game </summary>
             public  bool                        IncludeDrawEnding { get; set; }
         }
         
-        /// <summary>
-        /// Open an file for reading
-        /// </summary>
-        /// <param name="inpFileName"> File name to open</param>
-        /// <returns>
-        /// Stream or null if unable to open the file.
-        /// </returns>
-        public static Stream? OpenInpFile(string inpFileName) {
-            Stream? retVal;
-            
-            try {
-                retVal = File.OpenRead(inpFileName);
-            } catch(Exception) {
-                MessageBox.Show($"Unable to open the file - {inpFileName}");
-                retVal = null;
-            }
-            return retVal;
-        }
-
-        /// <summary>
-        /// Creates a new file
-        /// </summary>
-        /// <param name="outFileName"> Name of the file to create</param>
-        /// <returns>
-        /// Stream or null if unable to create the file.
-        /// </returns>
         public static StreamWriter? CreateOutFile(string outFileName) {
             StreamWriter? retVal;
             Stream        streamOut;
@@ -92,20 +46,8 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Write a PGN game in the specified output stream
-        /// </summary>
-        /// <param name="pgnBuffer"> PGN buffer</param>
-        /// <param name="writer">    Text writer</param>
-        /// <param name="pgnGame">   PGN game</param>
         private static void WritePgn(PgnLexical pgnBuffer, TextWriter writer, PgnGame pgnGame) => writer.Write(pgnBuffer.GetStringAtPos(pgnGame.StartingPos, pgnGame.Length));
 
-        /// <summary>
-        /// Gets the information about a PGN game
-        /// </summary>
-        /// <param name="rawGame">    Raw PGN game</param>
-        /// <param name="gameResult"> Result of the game</param>
-        /// <param name="gameDate">   Date of the game</param>
         private static void GetPgnGameInfo(PgnGame      rawGame,
                                            out string?  gameResult,
                                            out string?  gameDate) {
@@ -117,52 +59,7 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Scan the PGN stream to retrieve some informations
-        /// </summary>
-        /// <param name="pgnGames">      PGN games</param>
-        /// <param name="setPlayerList"> Set to be filled with the players list</param>
-        /// <param name="minElo">        Minimum ELO found in the games</param>
-        /// <param name="maxElo">        Maximum ELO found in the games</param>
-        /// <returns>
-        /// List of raw games without the move list
-        /// </returns>
-        public static void FillFilterList(List<PgnGame> pgnGames, HashSet<string> setPlayerList, ref int minElo, ref int maxElo) {
-            int     avgElo;
-            string? player;
-            
-            foreach (PgnGame pgnGame in pgnGames) {
-                if (setPlayerList != null) {
-                    player = pgnGame.WhitePlayerName;
-                    if (player != null && !setPlayerList.Contains(player)) {
-                        setPlayerList.Add(player);
-                    }
-                    player = pgnGame.BlackPlayerName;
-                    if (player != null && !setPlayerList.Contains(player)) {
-                        setPlayerList.Add(player);
-                    }
-                }
-                if (pgnGame.WhiteElo != -1 && pgnGame.BlackElo != -1) {
-                    avgElo = (pgnGame.WhiteElo + pgnGame.BlackElo) / 2;
-                    if (avgElo > maxElo) {
-                        maxElo = avgElo;
-                    }
-                    if (avgElo < minElo) {
-                        minElo = avgElo;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks if the specified game must be retained accordingly to the specified filter
-        /// </summary>
-        /// <param name="rawGame">      PGN Raw game</param>
-        /// <param name="avgElo">       Game average ELO</param>
-        /// <param name="filterClause"> Filter clause</param>
-        /// <returns>
-        /// true if must be retained
-        /// </returns>
+        
         private static bool IsRetained(PgnGame rawGame, int avgElo, FilterClause filterClause) {
             bool retVal;
 
@@ -199,16 +96,6 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Filter the content of the PGN file in the input stream to fill the output stream
-        /// </summary>
-        /// <param name="pgnParser">    PGN parser</param>
-        /// <param name="rawGames">     List of PGN raw games without move list</param>
-        /// <param name="textWriter">   Output stream. If null, just run to determine the result count.</param>
-        /// <param name="filterClause"> Filter clause</param>
-        /// <returns>
-        /// Number of resulting games.
-        /// </returns>
         public static int FilterPgn(PgnParser pgnParser, List<PgnGame> rawGames, TextWriter? textWriter, FilterClause filterClause) {
             int retVal;
             int whiteElo;
@@ -236,51 +123,6 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Creates a PGN file as a subset of an existing one.
-        /// </summary>
-        /// <param name="pgnParser">    PGN parser</param>
-        /// <param name="pgnGames">     Source PGN games</param>
-        /// <param name="filterClause"> Filter clause</param>
-        public static void CreateSubsetPgn(PgnParser     pgnParser,
-                                           List<PgnGame> pgnGames,
-                                           FilterClause  filterClause) {
-            SaveFileDialog saveDlg;
-            StreamWriter?  streamWriter;
-            int            count;
-
-            saveDlg = new SaveFileDialog {
-                AddExtension    = true,
-                CheckPathExists = true,
-                DefaultExt      = "pgn",
-                Filter          = "Chess PGN Files (*.pgn)|*.pgn",
-                OverwritePrompt = true,
-                Title           = "PGN File to Create"
-            };
-            if (saveDlg.ShowDialog() == true) {
-                streamWriter = CreateOutFile(saveDlg.FileName);
-                if (streamWriter != null) {
-                    using(streamWriter) {
-                        count = FilterPgn(pgnParser,
-                                          pgnGames,
-                                          streamWriter,
-                                          filterClause);
-                        MessageBox.Show($"The file '{saveDlg.FileName}' has been created with {count} game(s)");
-                    }
-                }
-            }
-        }
-
-        
-
-        /// <summary>
-        /// Gets Square Id from the PGN representation
-        /// </summary>
-        /// <param name="move"> PGN square representation.</param>
-        /// <returns>
-        /// square id (0-63)
-        /// PGN representation
-        /// </returns>
         public static int GetSquareIdFromPgn(string move) {
             int  retVal;
             char chr1;
@@ -300,24 +142,8 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Gets the PGN representation of a square
-        /// </summary>
-        /// <param name="pos">  Absolute position of the square.</param>
-        /// <returns>
-        /// PGN representation
-        /// </returns>
         public static string GetPgnSquareId(int pos) => ((char)('a' + 7 - (pos & 7))).ToString() + ((char)((pos >> 3) + '1')).ToString();
 
-        /// <summary>
-        /// Find all moves which end to the same position which can create ambiguity
-        /// </summary>
-        /// <param name="chessBoard">  Chessboard before the move has been done.</param>
-        /// <param name="move">        Move to convert</param>
-        /// <param name="playerColor"> Player making the move</param>
-        /// <returns>
-        /// PGN move
-        /// </returns>
         private static PgnAmbiguity FindMoveAmbiguity(ChessBoard chessBoard, Move move, ChessBoard.PlayerColor playerColor) {
             PgnAmbiguity         retVal = PgnAmbiguity.NotFound;
             ChessBoard.PieceType pieceType;
@@ -343,15 +169,6 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Gets a PGN move from a MovePosS structure and a chessboard.
-        /// </summary>
-        /// <param name="chessBoard">    Chessboard before the move has been done.</param>
-        /// <param name="move">          Move to convert</param>
-        /// <param name="includeEnding"> true to include ending</param>
-        /// <returns>
-        /// PGN move
-        /// </returns>
         public static string GetPgnMoveFromMove(ChessBoard chessBoard, MoveExt move, bool includeEnding) {
             string                 retVal;
             string                 startPos;
@@ -439,13 +256,7 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Generates FEN
-        /// </summary>
-        /// <param name="chessBoard"> Actual chess board (after the move)</param>
-        /// <returns>
-        /// PGN representation of the game
-        /// </returns>
+        // Generates FEN
         public static string GetFenFromBoard(ChessBoard chessBoard) {
             StringBuilder             strBuilder;
             int                       emptyCount;
@@ -532,24 +343,6 @@ namespace SrcChess2 {
             return strBuilder.ToString();
         }
 
-        /// <summary>
-        /// Generates the PGN representation of the board
-        /// </summary>
-        /// <param name="chessBoard">      Actual chess board (after the move)</param>
-        /// <param name="includeRedoMove"> true to include redo move</param>
-        /// <param name="eventName">       Event tag</param>
-        /// <param name="site">            Site tag</param>
-        /// <param name="date">            Date tag</param>
-        /// <param name="round">           Round tag</param>
-        /// <param name="whitePlayerName"> White player's name</param>
-        /// <param name="blackPlayerName"> Black player's name</param>
-        /// <param name="whitePlayerType"> White player's type</param>
-        /// <param name="blackPlayerType"> Black player's type</param>
-        /// <param name="whitePlayerTime"> Timer for the white</param>
-        /// <param name="blackPlayerTime"> Timer for the black</param>
-        /// <returns>
-        /// PGN representation of the game
-        /// </returns>
         public static string GetPgnFromBoard(ChessBoard    chessBoard,
                                              bool          includeRedoMove,
                                              string        eventName,
@@ -622,13 +415,6 @@ namespace SrcChess2 {
             return strBuilder.ToString();
         }
 
-        /// <summary>
-        /// Generates the PGN representation of a series of moves
-        /// </summary>
-        /// <param name="chessBoard">   Actual chess board.</param>
-        /// <returns>
-        /// PGN representation of the game
-        /// </returns>
         public static string[] GetPgnArrayFromMoveList(ChessBoard chessBoard) {
             string[]     retVal;
             int          oriPos;
@@ -647,5 +433,5 @@ namespace SrcChess2 {
             chessBoard.SetUndoRedoPosition(oriPos);
             return retVal;
         }
-    } // Class PgnUtil
-} // Namespace
+    }
+}

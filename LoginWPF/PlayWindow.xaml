@@ -13,31 +13,30 @@
         </Grid.ColumnDefinitions>
 
         <TabControl>
-            <TabItem HorizontalAlignment="Left">
+            <TabItem>
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">                        
+                    <StackPanel Orientation="Horizontal">
                         <!--<Image Source="#" Width="50" Height="50"/>-->
                         <TextBlock VerticalAlignment="Center" Text="Главное меню"/>
                     </StackPanel>
                 </TabItem.Header>
-                <Image Source="C:\Users\Админ\.vscode\extensions\ms-dotnettools.csharp-2.23.15-win32-x64\images\csharpIcon.png"/>
-            </TabItem>
-
-            <TabItem HorizontalAlignment="Left">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <!--<Image Source="#" Width="50" Height="50"/>-->
-                        <TextBlock VerticalAlignment="Center" Text="Поле"/>
-                    </StackPanel>
-                </TabItem.Header>
-                <!--<Image Source="C:\Users\Админ\.vscode\extensions\ms-vscode.cpptools-1.19.9-win32-x64\LanguageCCPP_color_128x.png"/>-->
-                <StackPanel>                    
-                    <WrapPanel x:Name="field" Width="400" Height="400" Margin="30"/>
-                    <StackPanel Orientation="Horizontal" Margin="30 0">
-                        <Button Click="NewGameButton_Click" Margin="10">Новая игра</Button>
-                        <Button Click="ClearButton_Click" Margin="10">Очистить</Button>
-                    </StackPanel>
-                </StackPanel>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="username" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="1" x:Name="rating" TextAlignment="Center"/>
+                        <Button Grid.Column="2" Click="QuitButton_Click">Quit</Button>
+                    </Grid>
+                    
+                </Grid>
             </TabItem>
             <TabItem HorizontalAlignment="Left">
                 <TabItem.Header>

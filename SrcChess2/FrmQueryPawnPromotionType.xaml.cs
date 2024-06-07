@@ -2,22 +2,11 @@
 using SrcChess2.Core;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Ask user for the to pawn promotion piece
-    /// </summary>
     public partial class FrmQueryPawnPromotionType : Window {
-        /// <summary>Pawn Promotion Piece</summary>
         private readonly ChessBoard.ValidPawnPromotion  m_validPawnPromotion;
 
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public FrmQueryPawnPromotionType() => InitializeComponent();
 
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="validPawnPromotion">  The valid pawn promotion type</param>
         public FrmQueryPawnPromotionType(ChessBoard.ValidPawnPromotion validPawnPromotion) : this() {
             m_validPawnPromotion        = validPawnPromotion;
             radioButtonQueen.IsEnabled  = ((m_validPawnPromotion & ChessBoard.ValidPawnPromotion.Queen)  != ChessBoard.ValidPawnPromotion.None);
@@ -35,9 +24,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Get the pawn promotion type
-        /// </summary>
         public Move.MoveType PromotionType {
             get {
                 Move.MoveType retVal;
@@ -55,14 +41,9 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when the Ok button is clicked
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event Parameter</param>
         private void ButOk_Click(object sender, RoutedEventArgs e) {
             DialogResult = true;
             Close();
         }
-    } // Class FrmQueryPawnPromotionType
-} // Namespace
+    }
+}

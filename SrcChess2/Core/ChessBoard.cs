@@ -12,49 +12,28 @@ namespace SrcChess2.Core {
     /// <summary>
     /// Implementation of the chess board without any user interface.
     /// </summary>
-    public sealed class ChessBoard : ISearchTrace<Move>, IXmlSerializable {
-
-        /// <summary>Player color (black and white)</summary>
+    public sealed class ChessBoard : ISearchTrace<Move> {
         public enum PlayerColor {
-            /// <summary>White player</summary>
             White   = 0,
-            /// <summary>Black player</summary>
             Black   = 1
         }
         
-        /// <summary>Same as PieceType, but easier serialization.</summary>
         public enum SerPieceType : byte {
-            /// <summary>No piece</summary>
             Empty       = 0,
-            /// <summary>Pawn</summary>
             WhitePawn   = 1,
-            /// <summary>Knight</summary>
             WhiteKnight = 2,
-            /// <summary>Bishop</summary>
             WhiteBishop = 3,
-            /// <summary>Rook</summary>
             WhiteRook   = 4,
-            /// <summary>Queen</summary>
             WhiteQueen  = 5,
-            /// <summary>King</summary>
             WhiteKing   = 6,
-            /// <summary>Not used</summary>
             NotUsed1    = 7,
-            /// <summary>Not used</summary>
             NotUsed2    = 8,
-            /// <summary>Pawn</summary>
             BlackPawn   = 9,
-            /// <summary>Knight</summary>
             BlackKnight = 10,
-            /// <summary>Bishop</summary>
             BlackBishop = 11,
-            /// <summary>Rook</summary>
             BlackRook   = 12,
-            /// <summary>Queen</summary>
             BlackQueen  = 13,
-            /// <summary>King</summary>
             BlackKing   = 14,
-            /// <summary>Not used</summary>
             NotUsed3    = 15,
         }
         
@@ -62,87 +41,58 @@ namespace SrcChess2.Core {
         [Flags]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "<Pending>")]
         public enum PieceType : byte {
-            /// <summary>No piece</summary>
             None      = 0,
-            /// <summary>Pawn</summary>
             Pawn      = 1,
-            /// <summary>Knight</summary>
             Knight    = 2,
-            /// <summary>Bishop</summary>
             Bishop    = 3,
-            /// <summary>Rook</summary>
             Rook      = 4,
-            /// <summary>Queen</summary>
             Queen     = 5,
-            /// <summary>King</summary>
             King      = 6,
-            /// <summary>Mask to find the piece</summary>
             PieceMask = 7,
-            /// <summary>Piece is black</summary>
             Black     = 8,
-            /// <summary>White piece</summary>
             White     = 0,
         }
         
-        /// <summary>List of valid pawn promotion</summary>
         [Flags]
         public enum ValidPawnPromotion {
-            /// <summary>No valid promotion</summary>
             None   = 0,
-            /// <summary>Promotion to queen</summary>
             Queen  = 1,
-            /// <summary>Promotion to rook</summary>
             Rook   = 2,
-            /// <summary>Promotion to bishop</summary>
             Bishop = 4,
-            /// <summary>Promotion to knight</summary>
             Knight = 8
         };
 
-        /// <summary>Mask for board extra info</summary>
+        //Mask for board extra info
         [Flags]
         public enum BoardStateMask {
-            /// <summary>0-63 to express the EnPassant possible position</summary>
+            //0-63 to express the EnPassant possible position
             EnPassant    = 63,
-            /// <summary>black player is next to move</summary>
             BlackToMove  = 64,
-            /// <summary>white left castling is possible</summary>
+            // <summary>white left castling is possible
             WLCastling   = 128,
-            /// <summary>white right castling is possible</summary>
+            //white right castling is possible
             WRCastling   = 256,
-            /// <summary>black left castling is possible</summary>
+            //black left castling is possible
             BLCastling   = 512,
-            /// <summary>black right castling is possible</summary>
+            //black right castling is possible
             BRCastling   = 1024,
-            /// <summary>Mask use to save the number of times the board has been repeated</summary>
+            //Mask use to save the number of times the board has been repeated
             BoardRepMask = 2048+4096+8192
         };
 
-        /// <summary>Any repetition causing a draw?</summary>
         public enum RepeatResult {
-            /// <summary>No repetition found</summary>
             NoRepeat,
-            /// <summary>3 times the same board</summary>
             ThreeFoldRepeat,
-            /// <summary>50 times without moving a pawn or eating a piece</summary>
             FiftyRuleRepeat
         };
         
-        /// <summary>Result of the current board. Game is finished unless OnGoing or Check</summary>
         public enum GameResult {
-            /// <summary>Game is going on</summary>
             OnGoing,
-            /// <summary>3 times the same board</summary>
             ThreeFoldRepeat,
-            /// <summary>50 times without moving a pawn or eating a piece</summary>
             FiftyRuleRepeat,
-            /// <summary>No more move for the next player</summary>
             TieNoMove,
-            /// <summary>Not enough pieces to do a check mate</summary>
             TieNoMatePossible,
-            /// <summary>Check</summary>
             Check,
-            /// <summary>Checkmate</summary>
             Mate
         }
 
@@ -216,11 +166,9 @@ namespace SrcChess2.Core {
         /// <summary>Object where to redirect the trace if any</summary>
         private ISearchTrace<Move>?            m_trace;
 
-        /// <summary>
         /// Class static constructor. 
         /// Builds the list of possible moves for each piece type per position.
         /// Etablished the value of each type of piece for board evaluation.
-        /// </summary>
         static ChessBoard() {
             s_attackPosInfoNull.PiecesAttacked  = 0;
             s_attackPosInfoNull.PiecesDefending = 0;
@@ -256,12 +204,7 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Get all squares which can be access by a piece positioned at squarePos
-        /// </summary>
-        /// <param name="squarePos">   Square position of the piece</param>
-        /// <param name="deltas">      Array of delta (in tuple) used to list the accessible position</param>
-        /// <param name="canBeRepeat"> True for Queen, Rook and Bishop. False for Knight, King and Pawn</param>
+        // Get all squares which can be access by a piece positioned at squarePos
         static private int[][] GetAccessibleSquares(int squarePos, int[] deltas, bool canBeRepeat) {
             List<int[]> retVal = new(4);
             int         colPos;
@@ -306,9 +249,6 @@ namespace SrcChess2.Core {
             return [.. retVal];
         }
 
-        /// <summary>
-        /// Class constructor. Build a board.
-        /// </summary>
         public ChessBoard(ISearchTrace<Move>? trace, Dispatcher dispatcher) {
             m_board                      = new PieceType[64];
             m_pieceTypeCount             = new int[16];
@@ -324,26 +264,12 @@ namespace SrcChess2.Core {
             ResetBoard();
         }
 
-        /// <summary>
-        /// Class constructor. Build a board.
-        /// </summary>
         public ChessBoard(Dispatcher dispatcher) : this(trace: null!, dispatcher) {}
 
-        /// <summary>
-        /// Class constructor. Use to create a new clone
-        /// </summary>
-        /// <param name="chessBoard">   Board to copy from</param>
+        //create a clone
         private ChessBoard(ChessBoard chessBoard) : this(chessBoard.m_boardAdaptor.Dispatcher) => CopyFrom(chessBoard);
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
         internal ChessBoard() : this((Dispatcher)null!) {}
 
-        /// <summary>
-        /// Copy the state of the board from the specified one.
-        /// </summary>
-        /// <param name="chessBoard"> Board to copy from</param>
         public void CopyFrom(ChessBoard chessBoard) {
             int[]   arr;
 
@@ -373,143 +299,11 @@ namespace SrcChess2.Core {
             CurrentPlayer                = chessBoard.CurrentPlayer;
         }
 
-        /// <summary>
-        /// Clone the current board
-        /// </summary>
-        /// <returns>
-        /// New copy of the board
-        /// </returns>
+
         public ChessBoard Clone() => new(this);
 
-        /// <summary>
-        /// Search trace
-        /// </summary>
-        /// <param name="depth">    Search depth</param>
-        /// <param name="playerId"> Color who play</param>
-        /// <param name="move">     Move position</param>
-        /// <param name="pts">      Points</param>
+        // Search trace
         public void LogSearchTrace(int depth, int playerId, Move move, int pts) => m_trace?.LogSearchTrace(depth, playerId, move, pts);
-
-        /// <summary>
-        /// Returns the XML serialization schema
-        /// </summary>
-        /// <returns>
-        /// null
-        /// </returns>
-        System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
-
-        /// <summary>
-        /// Initialize the object using the specified XML reader
-        /// </summary>
-        /// <param name="reader"> XML reader</param>
-        void IXmlSerializable.ReadXml(XmlReader reader) {
-            bool isEmpty;
-
-            if (reader.MoveToContent() != XmlNodeType.Element || reader.LocalName != "Board") {
-                throw new SerializationException("Unknown format");
-            } else if (reader.GetAttribute("Version") != "1.00") {
-                throw new SerializationException("Unknown version");
-            } else {
-                reader.ReadStartElement();
-                reader.ReadStartElement("Pieces");
-                for (int i = 0; i < m_board.Length; i++) {
-                    m_board[i] = (PieceType)Enum.Parse(typeof(SerPieceType), reader.ReadElementString("Piece"));
-                }
-                reader.ReadEndElement();
-                m_blackKingPos = int.Parse(reader.ReadElementString("BlackKingPosition"), CultureInfo.InvariantCulture);
-                m_whiteKingPos = int.Parse(reader.ReadElementString("WhiteKingPosition"), CultureInfo.InvariantCulture);
-                reader.ReadStartElement("PieceCount");
-                for (int i = 1; i < m_pieceTypeCount.Length - 1; i++) { 
-                    m_pieceTypeCount[i] = int.Parse(reader.ReadElementString(((SerPieceType)i).ToString()), CultureInfo.InvariantCulture);
-                }
-                reader.ReadEndElement();
-                m_blackKingMoveCount      = int.Parse(reader.ReadElementString("BlackKingMoveCount"),  CultureInfo.InvariantCulture);
-                m_whiteKingMoveCount      = int.Parse(reader.ReadElementString("WhiteKingMoveCount"),  CultureInfo.InvariantCulture);
-                m_rightBlackRookMoveCount = int.Parse(reader.ReadElementString("RBlackRookMoveCount"), CultureInfo.InvariantCulture);
-                m_leftBlackRookMoveCount  = int.Parse(reader.ReadElementString("LBlackRookMoveCount"), CultureInfo.InvariantCulture);
-                m_rightWhiteRookMoveCount = int.Parse(reader.ReadElementString("RWhiteRookMoveCount"), CultureInfo.InvariantCulture);
-                m_leftWhiteRookMoveCount  = int.Parse(reader.ReadElementString("LWhiteRookMoveCount"), CultureInfo.InvariantCulture);
-                m_isWhiteCastled          = bool.Parse(reader.ReadElementString("WhiteCastle"));
-                m_isBlackCastled          = bool.Parse(reader.ReadElementString("BlackCastle"));
-                m_possibleEnPassantPos    = int.Parse(reader.ReadElementString("EnPassant"), CultureInfo.InvariantCulture);
-                m_pPossibleEnPassantPosStack.Clear();
-                reader.MoveToContent();
-                isEmpty = reader.IsEmptyElement;
-                reader.ReadStartElement("EnPassantStack");
-                if (!isEmpty) {
-                    while (reader.IsStartElement()) {
-                        m_pPossibleEnPassantPosStack.Push(int.Parse(reader.ReadElementString("EP"), CultureInfo.InvariantCulture));
-                    }
-                    reader.ReadEndElement();
-                }
-                ((IXmlSerializable)MovePosStack).ReadXml(reader);
-                ZobristKey        = Int64.Parse(reader.ReadElementString("ZobristKey"), CultureInfo.InvariantCulture);
-                IsDesignMode      = bool.Parse(reader.ReadElementString("DesignMode"));
-                CurrentPlayer     = (PlayerColor)Enum.Parse(typeof(PlayerColor), reader.ReadElementString("NextMoveColor"));
-                IsStdInitialBoard = bool.Parse(reader.ReadElementString("StandardBoard"));
-                ((IXmlSerializable)MoveHistory).ReadXml(reader);
-                reader.MoveToContent();
-                m_posInfo.PiecesAttacked  = int.Parse(reader.GetAttribute("AttackedPieces") ?? "0",  CultureInfo.InvariantCulture);
-                m_posInfo.PiecesDefending = int.Parse(reader.GetAttribute("PiecesDefending") ?? "0", CultureInfo.InvariantCulture);
-                reader.ReadStartElement("PositionInfo");
-                reader.ReadEndElement();
-            }            
-        }
-
-        /// <summary>
-        /// Save the object into the XML writer
-        /// </summary>
-        /// <param name="writer"> XML writer</param>
-        void IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) {
-            int[]   stack;
-
-            writer.WriteStartElement("Board");
-            writer.WriteAttributeString("Version", "1.00");
-            
-            writer.WriteStartElement("Pieces");
-            foreach (PieceType ePiece in m_board) {
-                writer.WriteElementString("Piece", ((SerPieceType)ePiece).ToString());
-            }
-            writer.WriteEndElement();
-            
-            writer.WriteElementString("BlackKingPosition", m_blackKingPos.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("WhiteKingPosition", m_whiteKingPos.ToString(CultureInfo.InvariantCulture));
-            
-            writer.WriteStartElement("PieceCount");
-            for (int i = 1; i < m_pieceTypeCount.Length - 1; i++) {
-                writer.WriteElementString(((SerPieceType)i).ToString() , m_pieceTypeCount[i].ToString(CultureInfo.InvariantCulture));
-            }
-            writer.WriteEndElement();
-            
-            writer.WriteElementString("BlackKingMoveCount",  m_blackKingMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("WhiteKingMoveCount",  m_whiteKingMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("RBlackRookMoveCount", m_rightBlackRookMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("LBlackRookMoveCount", m_leftBlackRookMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("RWhiteRookMoveCount", m_rightWhiteRookMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("LWhiteRookMoveCount", m_leftWhiteRookMoveCount.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("WhiteCastle",         m_isWhiteCastled.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("BlackCastle",         m_isBlackCastled.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("EnPassant",           m_possibleEnPassantPos.ToString(CultureInfo.InvariantCulture));
-            
-            writer.WriteStartElement("EnPassantStack");
-            stack = [.. m_pPossibleEnPassantPosStack];
-            Array.Reverse(stack);
-            foreach (int enPassant in stack) {
-                writer.WriteElementString("EP",  enPassant.ToString(CultureInfo.InvariantCulture));
-            }
-            writer.WriteEndElement();
-            
-            ((IXmlSerializable)MovePosStack).WriteXml(writer);
-            writer.WriteElementString("ZobristKey",     ZobristKey.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("DesignMode",     IsDesignMode.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("NextMoveColor",  CurrentPlayer.ToString());
-            writer.WriteElementString("StandardBoard",  IsStdInitialBoard.ToString(CultureInfo.InvariantCulture));
-            ((IXmlSerializable)MoveHistory).WriteXml(writer);
-            writer.WriteStartElement("PositionInfo");
-            writer.WriteAttributeString("AttackedPieces",  m_posInfo.PiecesAttacked.ToString(CultureInfo.InvariantCulture));
-            writer.WriteAttributeString("PiecesDefending", m_posInfo.PiecesDefending.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
-        }
 
         /// <summary>
         /// Stack of all moves done since initial board
@@ -521,14 +315,6 @@ namespace SrcChess2.Core {
         /// </summary>
         public MoveHistory MoveHistory { get; private set; }
 
-        /// <summary>
-        /// Compute extra information about the board
-        /// </summary>
-        /// <param name="addRepetitionInfo"> true to add board repetition information</param>
-        /// <returns>
-        /// Extra information about the board to discriminate between two boards with sames pieces but
-        /// different setting.
-        /// </returns>
         public BoardStateMask ComputeBoardExtraInfo(bool addRepetitionInfo) {
             BoardStateMask retVal;
             
@@ -554,14 +340,6 @@ namespace SrcChess2.Core {
             }
             return retVal;
         }
-
-        /// <summary>
-        /// Reset initial board info
-        /// </summary>
-        /// <param name="nextMoveColor"> Next color moving</param>
-        /// <param name="isStdBoard">    true if its a standard board, false if coming from FEN or design mode</param>
-        /// <param name="boardMask">     Extra bord information</param>
-        /// <param name="enPassantPos">  Position for en passant</param>
         private void ResetInitialBoardInfo(PlayerColor nextMoveColor, bool isStdBoard, BoardStateMask boardMask, int enPassantPos) {
             PieceType pieceType;
             int       enPassantCol;
@@ -609,9 +387,6 @@ namespace SrcChess2.Core {
             m_pPossibleEnPassantPosStack.Clear();
         }
 
-        /// <summary>
-        /// Reset the board to the initial configuration
-        /// </summary>
         public void ResetBoard() {
             for (int i = 0; i < 64; i++) {
                 m_board[i] = PieceType.None;
@@ -642,39 +417,9 @@ namespace SrcChess2.Core {
                                   enPassantPos: 0);
         }
 
-        /// <summary>
-        /// Save the content of the board into the specified binary writer
-        /// </summary>
-        /// <param name="writer"> Binary writer</param>
-        public void SaveBoard(BinaryWriter writer) {
-            string                  version;
-            ChessBoard              initialChessBoard;
-            MoveHistory.PackedBoard packedBoard;
-            
-            version  = "SRCBD095";
-            writer.Write(version);
-            writer.Write(IsStdInitialBoard);
-            if (!IsStdInitialBoard) {
-                initialChessBoard = Clone();
-                initialChessBoard.UndoAllMoves();
-                packedBoard = MoveHistory.ComputePackedBoard(initialChessBoard.m_board, ComputeBoardExtraInfo(addRepetitionInfo: false));
-                writer.Write(packedBoard.m_val1);
-                writer.Write(packedBoard.m_val2);
-                writer.Write(packedBoard.m_val3);
-                writer.Write(packedBoard.m_val4);
-                writer.Write((int)packedBoard.m_info);
-                writer.Write(m_possibleEnPassantPos);
-            }
-            MovePosStack.SaveToWriter(writer);
-        }
+       
 
-        /// <summary>
-        /// Load the content of the board into the specified stream
-        /// </summary>
-        /// <param name="reader">   Binary reader</param>
-        /// <returns>
-        /// true if succeed, false if error
-        /// </returns>
+        //not used
         public bool LoadBoard(BinaryReader reader) {
             bool                    retVal;
             MoveHistory.PackedBoard packedBoard;
@@ -707,12 +452,6 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Create a new game using the specified list of moves
-        /// </summary>
-        /// <param name="chessBoardStarting"> Starting board or null if standard board</param>
-        /// <param name="moveList">           Move list</param>
-        /// <param name="startingColor">      Board starting color</param>
         public void CreateGameFromMove(ChessBoard? chessBoardStarting, List<MoveExt> moveList, PlayerColor startingColor) {
             BoardStateMask boardMask;
             
@@ -728,25 +467,10 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Determine if the board is in design mode
-        /// </summary>
         public bool IsDesignMode { get; private set; }
 
-        /// <summary>
-        /// Open the design mode
-        /// </summary>
         public void OpenDesignMode() => IsDesignMode = true;
 
-        /// <summary>
-        /// Try to close the design mode.
-        /// </summary>
-        /// <param name="nextMoveColor"> Color of the next move</param>
-        /// <param name="boardMask">     Board extra information</param>
-        /// <param name="enPassantPos">  Position of en passant or 0 if none</param>
-        /// <returns>
-        /// true if succeed, false if board is invalid
-        /// </returns>
         public bool CloseDesignMode(PlayerColor nextMoveColor, BoardStateMask boardMask, int enPassantPos) {
             bool retVal;
             
@@ -764,54 +488,29 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// true if the board is standard, false if initialized from design mode or FEN
-        /// </summary>
         public bool IsStdInitialBoard { get; private set; }
 
-        /// <summary>
-        /// Update the packed board representation and the value of the hash key representing the current board state.
-        /// </summary>
-        /// <param name="chgPos">   Position of the change</param>
-        /// <param name="newPiece"> New piece</param>
         private void UpdatePackedBoardAndZobristKey(int chgPos, PieceType newPiece) {
             ZobristKey = Core.ZobristKey.UpdateZobristKey(ZobristKey, chgPos, m_board[chgPos], newPiece);
             MoveHistory.UpdateCurrentPackedBoard(chgPos, newPiece);
         }
 
-        /// <summary>
-        /// Current Zobrist key value
-        /// </summary>
         public long ZobristKey { get; private set; }
 
         /// <summary>
         /// Update the packed board representation and the value of the hash key representing the current board state. Use if two
         /// board positions are changed.
         /// </summary>
-        /// <param name="pos1">      Position of the change</param>
-        /// <param name="newPiece1"> New piece</param>
-        /// <param name="pos2">      Position of the change</param>
-        /// <param name="newPiece2"> New piece</param>
         private void UpdatePackedBoardAndZobristKey(int pos1, PieceType newPiece1, int pos2, PieceType newPiece2) {
             ZobristKey = Core.ZobristKey.UpdateZobristKey(ZobristKey, pos1, m_board[pos1], newPiece1, pos2, m_board[pos2], newPiece2);
             MoveHistory.UpdateCurrentPackedBoard(pos1, newPiece1);
             MoveHistory.UpdateCurrentPackedBoard(pos2, newPiece2);
         }
 
-        /// <summary>
-        /// Player which play next
-        /// </summary>
         public PlayerColor CurrentPlayer { get; private set; }
-
-        /// <summary>
-        /// Player which did the last move
-        /// </summary>
         public PlayerColor LastMovePlayer => CurrentPlayer == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
 
-        /// <summary>
-        /// Get a piece at the specified position. Position 0 = Lower right (H1), 63 = Higher left (A8)
-        /// </summary>
-        /// <param name="pos">  Index position. 0 = Lower right (H1), 63 = Higher left (A8)</param>
+        // Get a piece at the specified position. Position 0 = Lower right (H1), 63 = Higher left (A8)
         public PieceType this[int pos] {
             get => m_board[pos];
             set {
@@ -827,13 +526,6 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Get the number of the specified piece which has been eated
-        /// </summary>
-        /// <param name="pieceType"> Piece and color</param>
-        /// <returns>
-        /// Count
-        /// </returns>
         public int GetEatedPieceCount(PieceType pieceType) {
             var retVal = (pieceType & PieceType.PieceMask) switch {
                 PieceType.Pawn                                         => 8 - m_pieceTypeCount[(int)pieceType],
@@ -847,38 +539,11 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Check the integrity of the board. Use for debugging.
-        /// </summary>
-        public void CheckIntegrity() {
-            int[] piecesCount;
-            int   blackKingPos = -1;
-            int   whiteKingPos = -1;
-            
-            piecesCount = new int[16];
-            for (int i = 0; i < 64; i++) {
-                piecesCount[(int)m_board[i]]++;
-                if (m_board[i] == PieceType.King) {
-                    whiteKingPos = i;
-                } else if (m_board[i] == (PieceType.King | PieceType.Black)) {
-                    blackKingPos = i;
-                }
-            }
-            for (int i = 1; i < 16; i++) {
-                if (m_pieceTypeCount[i] != piecesCount[i]) {
-                    throw new ChessException("Piece count mismatch");
-                }
-            }
-            if (blackKingPos != m_blackKingPos ||
-                whiteKingPos != m_whiteKingPos) {
-                throw new ChessException("King position mismatch");
-            }
-        }
+        
 
         /// <summary>
         /// Do the move (without log)
         /// </summary>
-        /// <param name="move"> Move to do</param>
         /// <returns>
         /// NoRepeat        No repetition
         /// ThreeFoldRepeat Three times the same board
@@ -1012,10 +677,6 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Undo a move (without log)
-        /// </summary>
-        /// <param name="move"> Move to undo</param>
         public void UndoMoveNoLog(Move move) {
             PieceType pieceType;
             PieceType originalPieceType;
@@ -1117,13 +778,6 @@ namespace SrcChess2.Core {
             CurrentPlayer          = CurrentPlayer == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
         }
 
-        /// <summary>
-        /// Check if there is enough pieces to make a check mate
-        /// </summary>
-        /// <returns>
-        /// true            Yes
-        /// false           No
-        /// </returns>
         public bool IsEnoughPieceForCheckMate() {
             bool retVal;
             int  bigPieceCount;
@@ -1158,15 +812,6 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Gets the current board result
-        /// </summary>
-        /// <returns>
-        /// NoRepeat Move is possible
-        /// Check    Move is possible, but the user is currently in check
-        /// Tie      Move is not possible, no move for the user
-        /// Mate     Move is not possible, user is checkmate
-        /// </returns>
         public GameResult GetCurrentResult(RepeatResult repeatResult) {
             GameResult  retVal;
             List<Move>  moveList;
@@ -1196,23 +841,8 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Checks the current board result
-        /// </summary>
-        /// <returns>
-        /// Board result
-        /// </returns>
         public GameResult GetCurrentResult() => GetCurrentResult(MoveHistory.CurrentRepeatResult(ZobristKey));
 
-        /// <summary>
-        /// Do the move
-        /// </summary>
-        /// <param name="move"> Move to do</param>
-        /// <returns>
-        /// NoRepeat        No repetition
-        /// ThreeFoldRepeat Three times the same board
-        /// FiftyRuleRepeat Fifty moves without pawn move or piece eaten
-        /// </returns>
         public GameResult DoMove(MoveExt move) {
             GameResult   retVal;
             RepeatResult repeatResult;
@@ -1223,22 +853,11 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Undo a move
-        /// </summary>
         public void UndoMove() {
             UndoMoveNoLog(MovePosStack.CurrentMove.Move);
             MovePosStack.MoveToPrevious();
         }
 
-        /// <summary>
-        /// Redo a move
-        /// </summary>
-        /// <returns>
-        /// NoRepeat        No repetition
-        /// ThreeFoldRepeat Three times the same board
-        /// FiftyRuleRepeat Fifty moves without pawn move or piece eaten
-        /// </returns>
         public GameResult RedoMove() {
             GameResult   retVal;
             RepeatResult repeatResult;
@@ -1249,10 +868,6 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Set the Undo/Redo position
-        /// </summary>
-        /// <param name="pos"> New position</param>
         public void SetUndoRedoPosition(int pos) {
             int curPos;
             
@@ -1267,9 +882,6 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Gets the number of white pieces on the board
-        /// </summary>
         public int WhitePieceCount {
             get {
                 int retVal = 0;
@@ -1280,10 +892,6 @@ namespace SrcChess2.Core {
                 return retVal;
             }
         }
-
-        /// <summary>
-        /// Gets the number of black pieces on the board
-        /// </summary>
         public int BlackPieceCount {
             get {
                 int retVal = 0;
@@ -1295,16 +903,7 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Enumerates the attacking position using arrays of possible position and two possible enemy pieces
-        /// </summary>
-        /// <param name="attackPosList"> List to fill with the attacking position. Can be null if only the count is wanted</param>
-        /// <param name="caseMoveList">  List of array of position</param>
-        /// <param name="pieceType1">    Piece which can possibly attack this position</param>
-        /// <param name="pieceType2">    Piece which can possibly attack this position</param>
-        /// <returns>
-        /// Count of attacker
-        /// </returns>
+        // Enumerates the attacking position using arrays of possible position and two possible enemy pieces
         private int EnumTheseAttackPos(List<byte>? attackPosList, int[][] caseMoveList, PieceType pieceType1, PieceType pieceType2) {
             int       retVal = 0;
             PieceType pieceType;
@@ -1325,15 +924,7 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Enumerates the attacking position using an array of possible position and one possible enemy piece
-        /// </summary>
-        /// <param name="attackPosList"> List to fill with the attacking position. Can be null if only the count is wanted</param>
-        /// <param name="caseMoveList">  Array of position.</param>
-        /// <param name="pieceType">     Piece which can possibly attack this position</param>
-        /// <returns>
-        /// Count of attacker
-        /// </returns>
+        // Enumerates the attacking position using an array of possible position and one possible enemy piece
         private int EnumTheseAttackPos(List<byte>? attackPosList, int[] caseMoveList, PieceType pieceType) {
             int retVal = 0;
             
@@ -1346,15 +937,7 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Enumerates all position which can attack a given position
-        /// </summary>
-        /// <param name="playerColor">   Position to check for black or white player</param>
-        /// <param name="pos">           Position to check.</param>
-        /// <param name="attackPosList"> Array to fill with the attacking position. Can be null if only the count is wanted</param>
-        /// <returns>
-        /// Count of attacker
-        /// </returns>
+        // Enumerates all position which can attack a given position
         private int EnumAttackPos(PlayerColor playerColor, int pos, List<byte>? attackPosList) {
             int       retVal;
             PieceType pieceColor;
@@ -1382,36 +965,11 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Determine if the specified king is attacked
-        /// </summary>
-        /// <param name="playerColor"> King's color to check</param>
-        /// <param name="kingPos">     Position of the king</param>
-        /// <returns>
-        /// true if in check
-        /// </returns>
         private bool IsCheck(PlayerColor playerColor, int kingPos) => EnumAttackPos(playerColor, kingPos, null) != 0;
 
-        /// <summary>
-        /// Determine if the specified king is attacked
-        /// </summary>
-        /// <param name="playerColor"> King's color to check</param>
-        /// <returns>
-        /// true if in check
-        /// </returns>
         public bool IsCheck(PlayerColor playerColor) => IsCheck(playerColor, (playerColor == PlayerColor.Black) ? m_blackKingPos : m_whiteKingPos);
 
-        /// <summary>
-        /// Evaluates a board. The number of point is greater than 0 if white is in advantage, less than 0 if black is.
-        /// </summary>
-        /// <param name="searchEngineSetting"> Search engine setting</param>
-        /// <param name="playerColor">         Color of the player to play</param>
-        /// <param name="moveCountDelta">      White move count - Black move count</param>
-        /// <param name="whiteAttackPosInfo">  Information about pieces attack</param>
-        /// <param name="blackAttackPosInfo">  Information about pieces attack</param>
-        /// <returns>
-        /// Number of points for the current board
-        /// </returns>
+        // Evaluates a board. The number of point is greater than 0 if white is in advantage, less than 0 if black is.
         public int Points<TSetting>(TSetting      searchEngineSetting,
                                     PlayerColor   playerColor,
                                     int           moveCountDelta,
@@ -1437,14 +995,7 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Add a move to the move list if the move doesn't provokes the king to be attacked.
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <param name="startPos">    Starting position</param>
-        /// <param name="endPos">      Ending position</param>
-        /// <param name="moveType">    Type of the move</param>
-        /// <param name="movePosList"> List of moves</param>
+        // Add a move to the move list if the move doesn't provokes the king to be attacked.
         private void AddIfNotCheck(PlayerColor playerColor, int startPos, int endPos, Move.MoveType moveType, List<Move>? movePosList) {
             PieceType newPiece;
             PieceType oldPiece;
@@ -1471,13 +1022,7 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Add a pawn promotion series of moves to the move list if the move doesn't provokes the king to be attacked.
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <param name="startPos">    Starting position</param>
-        /// <param name="endPos">      Ending position</param>
-        /// <param name="listMovePos"> List of moves</param>
+        // Add a pawn promotion series of moves to the move list if the move doesn't provokes the king to be attacked.
         private void AddPawnPromotionIfNotCheck(PlayerColor playerColor, int startPos, int endPos, List<Move>? listMovePos) {
             AddIfNotCheck(playerColor, startPos, endPos, Move.MoveType.PawnPromotionToQueen,  listMovePos);
             AddIfNotCheck(playerColor, startPos, endPos, Move.MoveType.PawnPromotionToRook,   listMovePos);
@@ -1485,13 +1030,6 @@ namespace SrcChess2.Core {
             AddIfNotCheck(playerColor, startPos, endPos, Move.MoveType.PawnPromotionToKnight, listMovePos);
         }
 
-        /// <summary>
-        /// Add a move to the move list if the new position is empty or is an enemy
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <param name="startPos">    Starting position</param>
-        /// <param name="endPos">      Ending position</param>
-        /// <param name="listMovePos"> List of moves</param>
         private bool AddMoveIfEnemyOrEmpty(PlayerColor playerColor, int startPos, int endPos, List<Move>? listMovePos) {
             bool        retVal;
             PieceType   oldPiece;
@@ -1506,11 +1044,7 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Enumerates the castling move
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <param name="movePosList"> List of moves</param>
+        // Enumerates the castling move
         private void EnumCastleMove(PlayerColor playerColor, List<Move>? movePosList) {
             if (playerColor == PlayerColor.Black) {
                 if (!m_isBlackCastled) {
@@ -1563,12 +1097,7 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Enumerates the move a specified pawn can do
-        /// </summary>
-        /// <param name="playerColor">  Color doing the the move</param>
-        /// <param name="startPos">     Pawn position</param>
-        /// <param name="movePosList">  List of moves</param>
+        // Enumerates the move a specified pawn can do
         private void EnumPawnMove(PlayerColor playerColor, int startPos, List<Move>? movePosList) {
             int  dir;
             int  newPos;
@@ -1622,11 +1151,7 @@ namespace SrcChess2.Core {
             }            
         }
 
-        /// <summary>
-        /// Enumerates the en passant move
-        /// </summary>
-        /// <param name="playerColor">  Color doing the the move</param>
-        /// <param name="movePosList">  List of moves</param>
+        // Enumerates the en passant move
         private void EnumEnPassant(PlayerColor playerColor, List<Move>? movePosList) {
             int       colPos;
             PieceType attackingPawn;
@@ -1667,13 +1192,7 @@ namespace SrcChess2.Core {
             }
         }
 
-        /// <summary>
-        /// Enumerates the move a specified piece can do using the pre-compute move array
-        /// </summary>
-        /// <param name="playerColor">         Color doing the the move</param>
-        /// <param name="startPos">            Starting position</param>
-        /// <param name="moveListForThisCase"> List of array of possible moves</param>
-        /// <param name="listMovePos">         List of moves</param>
+        // Enumerates the move a specified piece can do using the pre-compute move array
         private void EnumFromArray(PlayerColor playerColor, int startPos, int[][] moveListForThisCase, List<Move>? listMovePos) {
             foreach (int[] movePosForThisDiag in moveListForThisCase) {
                 foreach (int newPos in movePosForThisDiag) {
@@ -1683,29 +1202,13 @@ namespace SrcChess2.Core {
                 }
             }
         }
-
-        /// <summary>
-        /// Enumerates the move a specified piece can do using the pre-compute move array
-        /// </summary>
-        /// <param name="playerColor">         Color doing the the move</param>
-        /// <param name="startPos">            Starting position</param>
-        /// <param name="moveListForThisCase"> Array of possible moves</param>
-        /// <param name="listMovePos">         List of moves</param>
         private void EnumFromArray(PlayerColor playerColor, int startPos, int[] moveListForThisCase, List<Move>? listMovePos) {
             foreach (int newPos in moveListForThisCase) {
                 AddMoveIfEnemyOrEmpty(playerColor, startPos, newPos, listMovePos);
             }
         }
 
-        /// <summary>
-        /// Enumerates all the possible moves for a player
-        /// </summary>
-        /// <param name="playerColor">      Color doing the the move</param>
-        /// <param name="isMoveListNeeded"> true to returns a MoveList</param>
-        /// <param name="attackPosInfo">    Structure to fill with pieces information</param>
-        /// <returns>
-        /// List of possible moves or null
-        /// </returns>
+        // Enumerates all the possible moves for a player
         public List<Move>? EnumMoveList(PlayerColor playerColor, bool isMoveListNeeded, out AttackPosInfo attackPosInfo) {
             List<Move>? retVal;
             PieceType   pieceType;
@@ -1745,38 +1248,11 @@ namespace SrcChess2.Core {
             attackPosInfo = m_posInfo;
             return retVal;
         }
-
-        /// <summary>
-        /// Enumerates all the possible moves for a player
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <returns>
-        /// List of possible moves
-        /// </returns>
         public List<Move> EnumMoveList(PlayerColor playerColor) => EnumMoveList(playerColor, true, out _)!;
 
-        /// <summary>
-        /// Enumerates all the possible moves for a player
-        /// </summary>
-        /// <param name="playerColor"> Color doing the the move</param>
-        /// <param name="posInfo">     Structure to fill with pieces information</param>
-        public void ComputePiecesCoverage(PlayerColor playerColor, out AttackPosInfo posInfo) => EnumMoveList(playerColor, false, out posInfo);
-
-        /// <summary>
-        /// Cancel search
-        /// </summary>
         public static void CancelSearch() => SearchEngine<ChessGameBoardAdaptor,Move>.CancelSearch();
 
-        /// <summary>
-        /// Find the best move for the given player
-        /// </summary>
-        /// <param name="playerColor">        Player making the move</param>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
-        /// <param name="foundMoveAction">    Action to execute when the best move is found</param>
-        /// <param name="cookie">             Action cookie</param>
-        /// <returns>
-        /// true if search has started, false if search engine is busy
-        /// </returns>
+        // Find the best move for the given player
         public bool FindBestMove<T>(ChessBoard.PlayerColor  playerColor,
                                     ChessSearchSetting      chessSearchSetting,
                                     Action<T,object?>?      foundMoveAction,
@@ -1791,15 +1267,7 @@ namespace SrcChess2.Core {
                                                                      foundMoveAction,
                                                                      cookie);
 
-        /// <summary>
-        /// Find type of pawn promotion are valid for the specified starting/ending position
-        /// </summary>
-        /// <param name="playerColor"> Color doing the move</param>
-        /// <param name="startPos">    Position to start</param>
-        /// <param name="endPos">      Ending position</param>
-        /// <returns>
-        /// None or a combination of Queen, Rook, Bishop, Knight and Pawn
-        /// </returns>
+        // returns: None or a combination of Queen, Rook, Bishop, Knight and Pawn
         public ValidPawnPromotion FindValidPawnPromotion(PlayerColor playerColor, int startPos, int endPos) {
             ValidPawnPromotion retVal = ValidPawnPromotion.None;
             List<Move>         moveList;
@@ -1828,15 +1296,6 @@ namespace SrcChess2.Core {
             return retVal;
         }        
 
-        /// <summary>
-        /// Find a move from the valid move list
-        /// </summary>
-        /// <param name="playerColor"> Color doing the move</param>
-        /// <param name="startPos">    Position to start</param>
-        /// <param name="endPos">      Ending position</param>
-        /// <returns>
-        /// Move or -1
-        /// </returns>
         public Move FindIfValid(PlayerColor playerColor, int startPos, int endPos) {
             Move       retVal;
             List<Move> moveList;
@@ -1853,16 +1312,7 @@ namespace SrcChess2.Core {
                 retVal = moveList[index];
             }
             return retVal;
-        }        
-
-        /// <summary>
-        /// Find a move from the valid move list
-        /// </summary>
-        /// <param name="playerColor">  Color doing the move</param>
-        /// <param name="move">         Move to validate</param>
-        /// <returns>
-        /// true if valid, false if not
-        /// </returns>
+        }
         public bool IsMoveValid(PlayerColor playerColor, Move move) {
             bool        retVal;
             List<Move>  moveList;
@@ -1870,28 +1320,9 @@ namespace SrcChess2.Core {
             moveList = EnumMoveList(playerColor);
             retVal   = moveList.FindIndex(x => x.StartPos == move.StartPos && x.EndPos == move.EndPos) != -1;
             return retVal;
-        }        
-
-        /// <summary>
-        /// Find a move from the valid move list
-        /// </summary>
-        /// <param name="move"> Move to validate</param>
-        /// <returns>
-        /// true if valid, false if not
-        /// </returns>
+        }
         public bool IsMoveValid(Move move) => IsMoveValid(CurrentPlayer, move);
 
-        /// <summary>
-        /// Find a move from the opening book
-        /// </summary>
-        /// <param name="book">               Book to use</param>
-        /// <param name="chessSearchSetting"> Search mode</param>
-        /// <param name="playerColor">        Color doing the move</param>
-        /// <param name="prevMoves">          Previous move</param>
-        /// <param name="move">               Returned move</param>
-        /// <returns>
-        /// true if succeed, false if no move found in book
-        /// </returns>
         public bool FindBookMove(Book book, ChessSearchSetting chessSearchSetting, PlayerColor playerColor, MoveExt[] prevMoves, out Move move) {
             bool    retVal;
             int     packedMove;
@@ -1919,37 +1350,10 @@ namespace SrcChess2.Core {
             return retVal;
         }
 
-        /// <summary>
-        /// Undo all the specified move starting with the last move
-        /// </summary>
         public void UndoAllMoves() {
             while (MovePosStack.PositionInList != -1) {
                 UndoMove();
             }
         }
-
-    } // Class ChessBoard
-
-    /// <summary>Chess exception</summary>
-    [Serializable]
-    public class ChessException : Exception {
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        public ChessException() : base() {}
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="error"> Error</param>
-        public ChessException(string error) : base(error) {}
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="error"> Error</param>
-        /// <param name="ex">    Inner exception</param>
-        public ChessException(string error, Exception ex) : base(error, ex) {}
-
-    } // Class ChessException
-} // Namespace
+    }
+}

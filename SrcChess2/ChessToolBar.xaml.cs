@@ -9,64 +9,36 @@ namespace SrcChess2 {
     /// Toolbar for the Chess Program
     /// </summary>
     public partial class ChessToolBar {
-        
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public ChessToolBar() {
             InitializeComponent();
             ProgressBar.Visibility = Visibility.Hidden;
         }
 
-        /// <summary>
-        /// Start the progress bar
-        /// </summary>
         public void StartProgressBar() {
             ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.Start();
         }
 
-        /// <summary>
-        /// Stop the progress bar
-        /// </summary>
         public void EndProgressBar() {
             ProgressBar.Stop();
             ProgressBar.Visibility = Visibility.Hidden;
         }
     }
 
-    /// <summary>
-    /// Defines a toolbar button
-    /// </summary>
     public class ToolBarButton : Button {
-        /// <summary>Image dependency property</summary>
         public static readonly DependencyProperty ImageProperty;
-        /// <summary>Image Disabled dependency property</summary>
         public static readonly DependencyProperty DisabledImageProperty;
-        /// <summary>Flip dependency property</summary>
         public static readonly DependencyProperty FlipProperty;
-        /// <summary>Image dependency property</summary>
         public static readonly DependencyProperty TextProperty;
-        /// <summary>DisplayStyle dependency property</summary>
         public static readonly DependencyProperty DisplayStyleProperty;
-        /// <summary>Inner Image control</summary>
         private Image?                            m_imageCtrl;
-        /// <summary>Inner Text control</summary>
         private TextBlock?                        m_textCtrl;
 
-        /// <summary>Display Style applied to the Toolbarbutton</summary>
         public enum TbDisplayStyle {
-            /// <summary>Image only displayed</summary>
             Image,
-            /// <summary>Text only displayed</summary>
             Text,
-            /// <summary>Image and Text displayed</summary>
             ImageAndText
         }
-
-        /// <summary>
-        /// Class ctor
-        /// </summary>
         static ToolBarButton() {
             ImageProperty         = DependencyProperty.Register("Image",
                                                                 typeof(ImageSource),
@@ -101,26 +73,17 @@ namespace SrcChess2 {
             IsEnabledProperty.OverrideMetadata(typeof(ToolBarButton), new FrameworkPropertyMetadata(defaultValue: true, new PropertyChangedCallback(IsEnabledChanged)));
         }
 
-        /// <summary>
-        /// Class constructor
-        /// </summary>
         public ToolBarButton() : base() {
             Style = new Style(typeof(ToolBarButton), (Style)FindResource(ToolBar.ButtonStyleKey));
             BuildInnerButton();
         }
 
-        /// <summary>
-        /// Called when Image property changed
-        /// </summary>
         private static void ImageChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton me && e.OldValue != e.NewValue) {
                 me.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Image displayed to the button
-        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
         [Bindable(true)]
@@ -131,18 +94,13 @@ namespace SrcChess2 {
             set => SetValue(ImageProperty, value);
         }
 
-        /// <summary>
-        /// Called when Disabled Image property changed
-        /// </summary>
+
         private static void DisabledImageChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton me && e.OldValue != e.NewValue) {
                 me.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Disabled Image displayed to the button
-        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
         [Bindable(true)]
@@ -153,18 +111,12 @@ namespace SrcChess2 {
             set => SetValue(DisabledImageProperty, value);
         }
 
-        /// <summary>
-        /// Called when Flip property changed
-        /// </summary>
         private static void FlipChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton me && e.OldValue != e.NewValue) {
                 me.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Flip the image horizontally
-        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
         [Bindable(true)]
@@ -175,18 +127,12 @@ namespace SrcChess2 {
             set => SetValue(FlipProperty, value);
         }
 
-        /// <summary>
-        /// Called when Text property changed
-        /// </summary>
         private static void TextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton me && e.OldValue != e.NewValue) {
                 me.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Text displayed in button
-        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
         [Bindable(true)]
@@ -196,19 +142,12 @@ namespace SrcChess2 {
             get => (string)GetValue(TextProperty);
             set => SetValue(TextProperty, value);
         }
-
-        /// <summary>
-        /// Called when DisplayStyle property changed
-        /// </summary>
         private static void DisplayStyleChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton tbItem && e.OldValue != e.NewValue) {
                 tbItem.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Display Style applied to the button
-        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Browsable(true)]
         [Bindable(true)]
@@ -219,39 +158,21 @@ namespace SrcChess2 {
             set => SetValue(DisplayStyleProperty, value);
         }
 
-        /// <summary>
-        /// Set the Display Style
-        /// </summary>
-        /// <param name="element">      Dependency element</param>
-        /// <param name="displayStyle"> Display Style</param>
         public static void SetDisplayStyle(DependencyObject element, TbDisplayStyle displayStyle) {
             ArgumentNullException.ThrowIfNull(element);
             element.SetValue(DisplayStyleProperty, displayStyle);
         }
 
-        /// <summary>
-        /// Get the full name of the field attached to a column
-        /// </summary>
-        /// <param name="element">  Dependency element</param>
-        /// <returns>
-        /// Field full name
-        /// </returns>
+
         public static TbDisplayStyle GetDisplayStyle(DependencyObject element)
             => element == null ? throw new ArgumentNullException(nameof(element)) : (TbDisplayStyle)element.GetValue(DisplayStyleProperty);
 
-        /// <summary>
-        /// Called when IsEnabled property changed
-        /// </summary>
         private new static void IsEnabledChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             if (obj is ToolBarButton me && e.OldValue != e.NewValue) {
                 me.UpdateInnerButton();
             }
         }
 
-        /// <summary>
-        /// Set the source image depending the enabled state
-        /// </summary>
-        /// <param name="bFlip">    true if flipped</param>
         private void SetImage(bool bFlip) {
             ScaleTransform  scaleTransform;
 
@@ -266,9 +187,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Builds the inner controls to make the button
-        /// </summary>
         private void BuildInnerButton() {
             Grid grid;
 
@@ -287,9 +205,6 @@ namespace SrcChess2 {
             Content = grid;
         }
 
-        /// <summary>
-        /// Updates the inner controls of the button
-        /// </summary>
         private void UpdateInnerButton() {
             TbDisplayStyle displayStyle;
             Grid           grid;

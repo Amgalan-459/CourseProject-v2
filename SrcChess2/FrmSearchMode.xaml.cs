@@ -6,25 +6,11 @@ using GenericSearchEngine;
 using SrcChess2.Core;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Ask user about search mode
-    /// </summary>
     public partial class FrmSearchMode : Window {
-        /// <summary>Search mode setting</summary>
         private readonly ChessSearchSetting   m_chessSearchSetting = null!;
-        /// <summary>Board evaluation utility class</summary>
         private readonly BoardEvaluationUtil? m_boardEvalUtil;
 
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public FrmSearchMode() => InitializeComponent();
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="chessSearchSetting"> Actual search mode</param>
-        /// <param name="boardEvalUtil">      Board Evaluation list</param>
         public FrmSearchMode(ChessSearchSetting chessSearchSetting, BoardEvaluationUtil boardEvalUtil) : this() {
             int pos;
             
@@ -89,16 +75,8 @@ namespace SrcChess2 {
             plyCount.ValueChanged += new RoutedPropertyChangedEventHandler<double>(PlyCount_ValueChanged);
         }
 
-        /// <summary>
-        /// Called when the ply count is changed
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event parameter</param>
         private void PlyCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => plyCount2.Content = plyCount.Value.ToString(CultureInfo.InvariantCulture);
 
-        /// <summary>
-        /// Set the plyCount/avgTime control state
-        /// </summary>
         private void SetPlyAvgTimeState() {
             if (radioButtonAvgTime.IsChecked == true) {
                 plyCount.IsEnabled         = false;
@@ -113,32 +91,14 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when radioButtonFixDepth checked state has been changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event parameter</param>
         private void RadioButtonSearchType_CheckedChanged(object sender, RoutedEventArgs e) => SetPlyAvgTimeState();
 
-        /// <summary>
-        /// Called when the time in second textbox changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event parameter</param>
         private void TextBoxTimeInSec_TextChanged(object sender, TextChangedEventArgs e)
             => butOk.IsEnabled = (int.TryParse(textBoxTimeInSec.Text, out int val) && val > 0 && val < 999);
 
-        /// <summary>
-        /// Called when the transposition table size is changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event parameter</param>
         private void TextBoxTransSize_TextChanged(object sender, TextChangedEventArgs e)
             => butOk.IsEnabled = (int.TryParse(textBoxTransSize.Text, out int val) && val > 4 && val < 1000);
 
-        /// <summary>
-        /// Update the SearchMode object
-        /// </summary>
         private void UpdateSearchMode() {
             int               transTableSize;
             IBoardEvaluation? boardEval;
@@ -187,16 +147,10 @@ namespace SrcChess2 {
             boardEval                               ??= m_boardEvalUtil.BoardEvaluators[0];
             m_chessSearchSetting.BlackBoardEvaluator  = boardEval;
         }
-
-        /// <summary>
-        /// Called when the Ok button is clicked
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event parameter</param>
         private void ButOk_Click(object sender, RoutedEventArgs e) {
             UpdateSearchMode();
             DialogResult = true;
             Close();
         }
-    } // Class FrmManualSearchMode
-} // Namespace
+    }
+}

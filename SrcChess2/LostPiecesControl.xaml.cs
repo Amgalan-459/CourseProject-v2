@@ -4,28 +4,15 @@ using System.Windows.Input;
 using SrcChess2.Core;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Show a list of lost pieces
-    /// </summary>
     public partial class LostPiecesControl : UserControl {
-        /// <summary>Array of frame containing the piece visual</summary>
         private readonly Border[]               m_borders;
-        /// <summary>Array containining the pieces</summary>
         private readonly ChessBoard.PieceType[] m_pieceTypes;
-        /// <summary>Chess Board Control</summary>
         private ChessBoardControl?              m_chessBoardCtl;
-        /// <summary>Piece Set to use to show the pieces</summary>
         private PieceSet?                       m_pieceSet;
-        /// <summary>true if in design mode. In design mode, One of each possible pieces is shown and one can be selected.</summary>
         private bool                            m_isDesignMode;
-        /// <summary>Piece currently selected in design mode.</summary>
         private int                             m_selectedPiece;
-        /// <summary>Color being displayed. false = White, true = Black</summary>
         public bool                             Color { get; set; }
         
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public LostPiecesControl() {
             Border   border;
 
@@ -45,12 +32,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Enumerate the pieces which must be shown in the control
-        /// </summary>
-        /// <returns>
-        /// Array of pieces
-        /// </returns>
         private ChessBoard.PieceType[] EnumPiece() {
             ChessBoard.PieceType[] pieceTypes;
             ChessBoard.PieceType[] possiblePieceTypes;
@@ -92,10 +73,6 @@ namespace SrcChess2 {
             return pieceTypes;
         }
 
-        /// <summary>
-        /// Make the grid square
-        /// </summary>
-        /// <param name="size"> User control size</param>
         private static Size MakeSquare(Size size) {
             double  minSize;
 
@@ -104,23 +81,11 @@ namespace SrcChess2 {
             return size;
         }
         
-        /// <summary>
-        /// Called when the Measure() method is called
-        /// </summary>
-        /// <param name="constraint">   Size constraint</param>
-        /// <returns>
-        /// Control size
-        /// </returns>
         protected override Size MeasureOverride(Size constraint) {
             constraint = MakeSquare(constraint);
  	        return base.MeasureOverride(constraint);
         }
 
-        /// <summary>
-        /// Set the chess piece control
-        /// </summary>
-        /// <param name="pos">          Piece position</param>
-        /// <param name="pieceType">    Piece type</param>
         private void SetPieceControl(int pos, ChessBoard.PieceType pieceType) {
             Border   border;
             Control? controlPiece;
@@ -144,12 +109,6 @@ namespace SrcChess2 {
             border.Child = controlPiece;
         }
 
-        /// <summary>
-        /// Refresh the specified cell
-        /// </summary>
-        /// <param name="newPieces">     New pieces value</param>
-        /// <param name="pos">           Piece position</param>
-        /// <param name="isFullRefresh"> true to refresh even if its the same piece</param>
         private void RefreshCell(ChessBoard.PieceType[] newPieces, int pos, bool isFullRefresh) {
             ChessBoard.PieceType pieceType;
 
@@ -159,10 +118,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Refresh the board
-        /// </summary>
-        /// <param name="isFullRefresh">    Refresh even if its the same piece</param>
         private void Refresh(bool isFullRefresh) {
             ChessBoard             chessBoard;
             ChessBoard.PieceType[] newPieceTypes;
@@ -177,15 +132,8 @@ namespace SrcChess2 {
                 }
             }
         }
-
-        /// <summary>
-        /// Refresh the board
-        /// </summary>
         public void Refresh() => Refresh(isFullRefresh: false);
         
-        /// <summary>
-        /// Chess Board Control associate with this control
-        /// </summary>
         public ChessBoardControl? ChessBoardControl {
             get => m_chessBoardCtl;
             set {
@@ -196,9 +144,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Piece Set use to draw the visual pieces
-        /// </summary>
         public PieceSet? PieceSet {
             get => m_pieceSet;
             set {
@@ -209,9 +154,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Select a piece (in design mode only)
-        /// </summary>
         public int SelectedIndex {
             get => m_selectedPiece;
             set {
@@ -229,9 +171,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Gets the currently selected piece
-        /// </summary>
         public ChessBoard.PieceType SelectedPiece {
             get {
                 ChessBoard.PieceType retVal = ChessBoard.PieceType.None;
@@ -272,9 +211,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Select the design mode
-        /// </summary>
         public bool BoardDesignMode {
             get => m_isDesignMode;
             set {
@@ -288,11 +224,6 @@ namespace SrcChess2 {
                 }
             }
         }
-
-        /// <summary>
-        /// Called when one of the mouse button is release
-        /// </summary>
-        /// <param name="e">        Event</param>
         protected override void OnMouseUp(MouseButtonEventArgs e) {
             Point pt;
             int   rowPos;

@@ -8,28 +8,11 @@ using System.IO;
 using System.Resources;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Piece Set included in the assembly
-    /// </summary>
     public class PieceSetStandard : PieceSet {
-        /// <summary>Base Path of the resource</summary>
         private readonly string  m_basePath;
 
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
-        /// <param name="name">     Piece set Name</param>
-        /// <param name="basePath"> Base path in the assembly for this piece set</param>
-        /// 
         private PieceSetStandard(string name, string basePath) : base(name) => m_basePath   = basePath;
 
-        /// <summary>
-        /// Gets the pieces name as defined in the assembly
-        /// </summary>
-        /// <param name="piece">   Piece</param>
-        /// <returns>
-        /// Piece name
-        /// </returns>
         protected static string NameFromChessPiece(ChessPiece piece)
             => piece switch {
                 ChessPiece.Black_Pawn   => "black pawn",
@@ -47,10 +30,6 @@ namespace SrcChess2 {
                 _                       => ""
             };
 
-        /// <summary>
-        /// Load the specified piece from BAML
-        /// </summary>
-        /// <param name="piece">    Piece</param>
         protected override UserControl LoadPiece(ChessPiece piece) {
             UserControl retVal;
             Uri         uri;
@@ -62,12 +41,7 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Load piece sets from resource
-        /// </summary>
-        /// <returns>
-        /// List of pieces
-        /// </returns>
+        
         public static SortedList<string, PieceSet> LoadPieceSetFromResource() {
             SortedList<string, PieceSet> retVal;
             Assembly                     asm;
@@ -110,5 +84,5 @@ namespace SrcChess2 {
             }
             return retVal;
         }
-    } // Class PieceSetStandard
-} // Namespace
+    }
+}

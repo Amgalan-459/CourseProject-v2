@@ -8,24 +8,10 @@ using GenericSearchEngine;
 using SrcChess2.Core;
 using SrcChess2.PgnParsing;
 
-namespace SrcChess2 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    /// TODO:
-    ///     Implement blitz
-    ///     Implement background thinking while human is playing
-    ///     Try to find a better color picker
-    ///     Indicates the rating of the found move
-    ///     
+namespace SrcChess2 {   
     public partial class MainWindow : Window {
 
         #region Types
-        /// <summary>Getting computer against computer playing statistic</summary>
-        /// <remarks>
-        /// Ctor
-        /// </remarks>
-        /// <param name="gameCount"> Game count</param>
         private class BoardEvaluationStat(int gameCount) {
             public TimeSpan              Method1Time { get; set; } = TimeSpan.Zero;
             public TimeSpan              Method2Time { get; set; } = TimeSpan.Zero;
@@ -41,13 +27,10 @@ namespace SrcChess2 {
             public  MessageMode          OriMessageMode { get; set; }
         };
         
-        /// <summary>Use for computer move</summary>
+        //Use for computer move
         public enum MessageMode {
-            /// <summary>No message</summary>
             Silent      = 0,
-            /// <summary>Only messages for move which are terminating the game</summary>
             CallEndGame = 1,
-            /// <summary>All messages</summary>
             Verbose     = 2
         };
         
@@ -69,80 +52,37 @@ namespace SrcChess2 {
         #endregion
 
         #region Command
-        /// <summary>Command: New Game</summary>
         public static readonly RoutedUICommand      NewGameCommand             = new("_New Game...",                   "NewGame",              typeof(MainWindow));
-        /// <summary>Command: Load Game</summary>
         public static readonly RoutedUICommand      LoadGameCommand            = new("_Load Game...",                  "LoadGame",             typeof(MainWindow));
-        /// <summary>Command: Load Game</summary>
         public static readonly RoutedUICommand      LoadPuzzleCommand          = new("Load a Chess P_uzzle...",        "LoadPuzzle",           typeof(MainWindow));
-        /// <summary>Command: Create Game</summary>
         public static readonly RoutedUICommand      CreateGameCommand          = new("_Create Game from PGN...",       "CreateGame",           typeof(MainWindow));
-        /// <summary>Command: Save Game</summary>
         public static readonly RoutedUICommand      SaveGameCommand            = new("_Save Game...",                  "SaveGame",             typeof(MainWindow));
-        /// <summary>Command: Save Game in PGN</summary>
-        public static readonly RoutedUICommand      SaveGameInPgnCommand       = new("Save Game _To PGN...",           "SaveGameToPgn",        typeof(MainWindow));
-        /// <summary>Command: Save Game in PGN</summary>
-        public static readonly RoutedUICommand      CreateSnapshotCommand      = new("Create a _Debugging Snapshot...","CreateSnapshot",       typeof(MainWindow));
-        /// <summary>Command: Connect to FICS Server</summary>
-        public static readonly RoutedUICommand      ConnectToFicsCommand       = new("Connect to _FICS Server...",     "ConnectToFics",        typeof(MainWindow));
-        /// <summary>Command: Connect to FICS Server</summary>
-        public static readonly RoutedUICommand      DisconnectFromFicsCommand  = new("_Disconnect from FICS Server",  "DisconnectFromFics",    typeof(MainWindow));
-        /// <summary>Command: Connect to FICS Server</summary>
-        public static readonly RoutedUICommand      ObserveFicsGameCommand     = new("_Observe a FICS Game...",        "ObserveFicsGame",      typeof(MainWindow));
-        /// <summary>Command: Quit</summary>
         public static readonly RoutedUICommand      QuitCommand                = new("_Quit",                          "Quit",                 typeof(MainWindow));
 
-        /// <summary>Command: Hint</summary>
         public static readonly RoutedUICommand      HintCommand                = new("_Hint",                          "Hint",                 typeof(MainWindow));
-        /// <summary>Command: Undo</summary>
         public static readonly RoutedUICommand      UndoCommand                = new("_Undo",                          "Undo",                 typeof(MainWindow));
-        /// <summary>Command: Redo</summary>
         public static readonly RoutedUICommand      RedoCommand                = new("_Redo",                          "Redo",                 typeof(MainWindow));
-        /// <summary>Command: Refresh</summary>
         public static readonly RoutedUICommand      RefreshCommand             = new("Re_fresh",                       "Refresh",              typeof(MainWindow));
-        /// <summary>Command: Select Players</summary>
         public static readonly RoutedUICommand      SelectPlayersCommand       = new("_Select Players...",             "SelectPlayers",        typeof(MainWindow));
-        /// <summary>Command: Automatic Play</summary>
         public static readonly RoutedUICommand      AutomaticPlayCommand       = new("_Automatic Play",                "AutomaticPlay",        typeof(MainWindow));
-        /// <summary>Command: Fast Automatic Play</summary>
         public static readonly RoutedUICommand      FastAutomaticPlayCommand   = new("_Fast Automatic Play",           "FastAutomaticPlay",    typeof(MainWindow));
-        /// <summary>Command: Cancel Play</summary>
         public static readonly RoutedUICommand      CancelPlayCommand          = new("_Cancel Play",                   "CancelPlay",           typeof(MainWindow));
-        /// <summary>Command: Design Mode</summary>
         public static readonly RoutedUICommand      DesignModeCommand          = new("_Design Mode",                   "DesignMode",           typeof(MainWindow));
 
-        /// <summary>Command: Search Mode</summary>
         public static readonly RoutedUICommand      ManualSearchSettingCommand = new("_Manual Search Setting...",      "ManualSearchSetting",  typeof(MainWindow));
-        /// <summary>Command: Flash Piece</summary>
         public static readonly RoutedUICommand      FlashPieceCommand          = new("_Flash Piece",                   "FlashPiece",           typeof(MainWindow));
-        /// <summary>Command: Flash Piece</summary>
         public static readonly RoutedUICommand      ReversedBoardCommand       = new("_Reversed Board",                "ReversedBoard",        typeof(MainWindow));
-        /// <summary>Command: PGN Notation</summary>
         public static readonly RoutedUICommand      PgnNotationCommand         = new("_PGN Notation",                  "PGNNotation",          typeof(MainWindow));
-        /// <summary>Command: Board Settings</summary>
         public static readonly RoutedUICommand      BoardSettingCommand        = new("_Board Settings...",             "BoardSettings",         typeof(MainWindow));
         
-        /// <summary>Command: Create a Book</summary>
-        public static readonly RoutedUICommand      CreateBookCommand          = new("_Create a Book...",              "CreateBook",           typeof(MainWindow));
-        /// <summary>Command: Filter a PGN File</summary>
-        public static readonly RoutedUICommand      FilterPgnFileCommand       = new("_Filter a PGN File...",          "FilterPgnFile",        typeof(MainWindow));
-        /// <summary>Command: Test Board Evaluation</summary>
         public static readonly RoutedUICommand      TestBoardEvaluationCommand = new("_Test Board Evaluation...",      "TestBoardEvaluation",  typeof(MainWindow));
 
-        /// <summary>Command: Test Board Evaluation</summary>
-        public static readonly RoutedUICommand      AboutCommand               = new("_About...",                      "About",                typeof(MainWindow));
-
-        /// <summary>List of all supported commands</summary>
+        //List of all supported commands
         private static readonly RoutedUICommand[]   m_arrCommands = [ NewGameCommand,
                                                                       LoadGameCommand,
                                                                       LoadPuzzleCommand,
                                                                       CreateGameCommand,
                                                                       SaveGameCommand,
-                                                                      SaveGameInPgnCommand,
-                                                                      CreateSnapshotCommand,
-                                                                      ConnectToFicsCommand,
-                                                                      DisconnectFromFicsCommand,
-                                                                      ObserveFicsGameCommand,
                                                                       QuitCommand,
                                                                       HintCommand,
                                                                       UndoCommand,
@@ -158,10 +98,7 @@ namespace SrcChess2 {
                                                                       ReversedBoardCommand,
                                                                       PgnNotationCommand,
                                                                       BoardSettingCommand,
-                                                                      CreateBookCommand,
-                                                                      FilterPgnFileCommand,
-                                                                      TestBoardEvaluationCommand,
-                                                                      AboutCommand ];
+                                                                      TestBoardEvaluationCommand];
         #endregion
 
         #region Members        
@@ -206,9 +143,6 @@ namespace SrcChess2 {
             LoadGameCommand.InputGestures.Add(           new KeyGesture(Key.O,  ModifierKeys.Control));
             LoadPuzzleCommand.InputGestures.Add(         new KeyGesture(Key.U,  ModifierKeys.Control));
             SaveGameCommand.InputGestures.Add(           new KeyGesture(Key.S,  ModifierKeys.Control));
-            ConnectToFicsCommand.InputGestures.Add(      new KeyGesture(Key.C,  ModifierKeys.Shift | ModifierKeys.Control));
-            ObserveFicsGameCommand.InputGestures.Add(    new KeyGesture(Key.O,  ModifierKeys.Shift | ModifierKeys.Control));
-            DisconnectFromFicsCommand.InputGestures.Add( new KeyGesture(Key.D,  ModifierKeys.Shift | ModifierKeys.Control));
             QuitCommand.InputGestures.Add(               new KeyGesture(Key.F4, ModifierKeys.Alt));
             HintCommand.InputGestures.Add(               new KeyGesture(Key.H,  ModifierKeys.Control));
             UndoCommand.InputGestures.Add(               new KeyGesture(Key.Z,  ModifierKeys.Control));
@@ -221,12 +155,7 @@ namespace SrcChess2 {
             CancelPlayCommand.InputGestures.Add(         new KeyGesture(Key.C,  ModifierKeys.Control));
             DesignModeCommand.InputGestures.Add(         new KeyGesture(Key.D,  ModifierKeys.Control));
             ManualSearchSettingCommand.InputGestures.Add(new KeyGesture(Key.M,  ModifierKeys.Control));
-            AboutCommand.InputGestures.Add(              new KeyGesture(Key.F1));
         }
-
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public MainWindow() {
             ExecutedRoutedEventHandler   onExecutedCmd;
             CanExecuteRoutedEventHandler onCanExecuteCmd;
@@ -268,7 +197,6 @@ namespace SrcChess2 {
             ShowSearchMode();
             mnuOptionFlashPiece.IsChecked      = m_chessCtl.MoveFlashing;
             mnuOptionsReversedBoard.IsChecked  = m_chessCtl.IsBoardReversed;
-            //mnuOptionPgnNotation.IsChecked     = (m_moveViewer.DisplayMode == MoveViewer.ViewerDisplayMode.Pgn);
             m_ficsConnection                   = null;
             onExecutedCmd                      = new ExecutedRoutedEventHandler(OnExecutedCmd);
             onCanExecuteCmd                    = new CanExecuteRoutedEventHandler(OnCanExecuteCmd);
@@ -279,22 +207,11 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when the main window is closing
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event argument</param>
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
             if (CheckIfDirty()) {
                 e.Cancel = true;
             }
         }
-
-        /// <summary>
-        /// Called when the main window has been closed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event argument</param>
         private void MainWindow_Closed(object? sender, EventArgs e) {
             m_settingAdaptor.SaveChessBoardCtl(m_chessCtl);
             m_settingAdaptor.SaveMainWindow(this);
@@ -312,35 +229,14 @@ namespace SrcChess2 {
         #endregion
 
         #region Command Handling
-        /// <summary>
-        /// Executes the specified command
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Routed event argument</param>
         public virtual void OnExecutedCmd(object sender, ExecutedRoutedEventArgs e) {
             ChessBoard.PlayerColor  computerColor;
             bool                    isPlayerAgainstPlayer;
 
             if (e.Command == NewGameCommand) {
                 NewGame();
-            //} else if (e.Command == LoadGameCommand) {
-            //    LoadGame();
             } else if (e.Command == LoadPuzzleCommand) {
                 LoadPuzzle();
-            //} else if (e.Command == CreateGameCommand) {
-            //    CreateGame();
-            //} else if (e.Command == SaveGameCommand) {
-            //    m_chessCtl.SaveToFile();
-            //} else if (e.Command == SaveGameInPgnCommand) {
-            //    m_chessCtl.SavePgnToFile();
-            //} else if (e.Command == CreateSnapshotCommand) {
-            //    m_chessCtl.SaveSnapshot();
-            //} else if (e.Command == ConnectToFicsCommand) {
-            //    ConnectToFics();
-            //} else if (e.Command == ObserveFicsGameCommand) {
-            //    ObserveFicsGame();
-            //} else if (e.Command == DisconnectFromFicsCommand) {
-            //    DisconnectFromFics();
             } else if (e.Command == QuitCommand) {
                 Close();
             } else if (e.Command == HintCommand) {
@@ -377,12 +273,6 @@ namespace SrcChess2 {
                 e.Handled   = false;
             }
         }
-
-        /// <summary>
-        /// Determine if a command can be executed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Routed event argument</param>
         public virtual void OnCanExecuteCmd(object sender, CanExecuteRoutedEventArgs e) {
             bool isDesignMode;
             bool isBusy;
@@ -398,15 +288,11 @@ namespace SrcChess2 {
                 e.Command == LoadGameCommand          ||
                 e.Command == LoadPuzzleCommand        ||
                 e.Command == SaveGameCommand          ||
-                e.Command == SaveGameInPgnCommand     ||
-                e.Command == CreateSnapshotCommand    ||
                 e.Command == HintCommand              ||
                 e.Command == RefreshCommand           ||
                 e.Command == SelectPlayersCommand     ||
                 e.Command == AutomaticPlayCommand     ||
-                e.Command == FastAutomaticPlayCommand ||
-                e.Command == CreateBookCommand        ||
-                e.Command == FilterPgnFileCommand) {
+                e.Command == FastAutomaticPlayCommand) {
                 e.CanExecute = !(isSearchEngineBusy || isDesignMode || isBusy || isObservingGame);
             } else if (e.Command == ReversedBoardCommand) {
                 e.CanExecute = !(isSearchEngineBusy || isBusy || isObservingGame || m_chessCtl.SelectedCell != -1);
@@ -417,8 +303,7 @@ namespace SrcChess2 {
                        e.Command == ReversedBoardCommand       ||
                        e.Command == PgnNotationCommand         ||
                        e.Command == BoardSettingCommand        ||
-                       e.Command == TestBoardEvaluationCommand ||
-                       e.Command == AboutCommand) {
+                       e.Command == TestBoardEvaluationCommand) {
                 e.CanExecute = !(isSearchEngineBusy || isBusy || isObservingGame);
             } else if (e.Command == CancelPlayCommand) {
                 e.CanExecute = isSearchEngineBusy | isBusy | isObservingGame;
@@ -426,12 +311,6 @@ namespace SrcChess2 {
                 e.CanExecute = (!isSearchEngineBusy && !isBusy && !isObservingGame && !isDesignMode && m_chessCtl.UndoCount >= ((m_playingMode == MainPlayingMode.PlayerAgainstPlayer) ? 1 : 2));
             } else if (e.Command == RedoCommand) {
                 e.CanExecute = (!isSearchEngineBusy && !isBusy && !isObservingGame && !isDesignMode && m_chessCtl.RedoCount != 0);
-            } else if (e.Command == ConnectToFicsCommand) {
-                e.CanExecute = (m_ficsConnection == null);
-            } else if (e.Command == DisconnectFromFicsCommand) {
-                e.CanExecute = (m_ficsConnection != null && !isObservingGame);
-            } else if (e.Command == ObserveFicsGameCommand) {
-                e.CanExecute = (m_ficsConnection != null && !isObservingGame);
             } else {
                 e.Handled = false;
             }
@@ -439,9 +318,6 @@ namespace SrcChess2 {
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Used piece set
-        /// </summary>
         public PieceSet? PieceSet {
             get => m_pieceSet;
             set {
@@ -454,9 +330,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Current playing mode (player vs player, player vs computer or computer vs computer)
-        /// </summary>
         public MainPlayingMode PlayingMode {
             get => m_playingMode;
             set {
@@ -482,9 +355,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Checks if computer must play the current move
-        /// </summary>
         public bool IsComputerMustPlay {
             get {
                 bool                  retVal;
@@ -507,22 +377,10 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Returns the number of running threads
-        /// </summary>
-        /// <returns>
-        /// Number of running threads
-        /// </returns>
         public static int GetSearchThreadRunningCount => SearchEngine<ChessGameBoardAdaptor, Move>.GetRunningThreadCount();
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Checks if board is dirty and need to be saved
-        /// </summary>
-        /// <returns>
-        /// true if still dirty (command must be canceled), false not
-        /// </returns>
         private bool CheckIfDirty() {
             bool retVal = false;
 
@@ -543,15 +401,8 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Update the move status
-        /// </summary>
-        /// <param name="threadCount">  Thread running a search or 0 if none</param>
         private void UpdateFindingBestMoveStatus(int threadCount) => m_statusLabelMove.Content = $"Finding Best Move: {threadCount} thread{(threadCount > 1 ? "s" : "")} running...";
 
-        /// <summary>
-        /// Start asynchronous computing
-        /// </summary>
         private void StartAsyncComputing() {
             bool                isDifferentThreadForUI;
             ChessSearchSetting  chessSearchSetting;
@@ -572,11 +423,6 @@ namespace SrcChess2 {
             Cursor                           = Cursors.Wait;
         }
 
-        /// <summary>
-        /// Show a move in status bar
-        /// </summary>
-        /// <param name="playerColor"> Color of the move</param>
-        /// <param name="move">        Move</param>
         private void ShowMoveInStatusBar(ChessBoard.PlayerColor playerColor, MoveExt move) {
             string                           permCount;
             System.Globalization.CultureInfo ci;
@@ -598,9 +444,6 @@ namespace SrcChess2 {
             m_statusLabelPermutation.Content = permCount;
         }
 
-        /// <summary>
-        /// Show the current searching parameters in the status bar
-        /// </summary>
         private void ShowSearchMode() {
             string  searchModeTxt;
 
@@ -616,24 +459,11 @@ namespace SrcChess2 {
             m_statusLabelSearchMode.Content = searchModeTxt;
             m_statusLabelSearchMode.ToolTip = m_chessSearchSetting.GetBoardSearchSetting().HumanSearchMode();
         }
-
-        /// <summary>
-        /// Show the current searching parameters in the status bar
-        /// </summary>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
         public void SetSearchMode(ChessSearchSetting chessSearchSetting) {
             m_chessCtl.ChessSearchSetting = chessSearchSetting;
             ShowSearchMode();
         }
 
-        /// <summary>
-        /// Display a message related to the MoveStateE
-        /// </summary>
-        /// <param name="moveResult">  Move result</param>
-        /// <param name="messageMode"> Message mode</param>
-        /// <returns>
-        /// true if it's the end of the game. false if not
-        /// </returns>
         private bool DisplayMessage(ChessBoard.GameResult moveResult, MessageMode messageMode) {
             bool                   retVal;
             ChessBoard.PlayerColor currentPlayerColor;
@@ -692,36 +522,18 @@ namespace SrcChess2 {
             }
             return retVal;
         }
-
-        /// <summary>
-        /// Reset the board.
-        /// </summary>
         private void ResetBoard() {
             m_chessCtl.ResetBoard();
             SetCmdState();
         }
 
-        /// <summary>
-        /// Determine which menu item is enabled
-        /// </summary>
         public static void SetCmdState() => CommandManager.InvalidateRequerySuggested();
 
-        /// <summary>
-        /// Unlock the chess board when asynchronous computing is finished
-        /// </summary>
         private void UnlockBoard() {
             Cursor = Cursors.Arrow;
             SetCmdState();
         }
 
-        /// <summary>
-        /// Play the computer move found by the search.
-        /// </summary>
-        /// <param name="flash"> true to flash moving position</param>
-        /// <param name="move">  Best move</param>
-        /// <returns>
-        /// true if end of game, false if not
-        /// </returns>
         private void PlayComputerEnd(bool flash, object? move) {
             ChessBoard.GameResult  result;
 
@@ -749,30 +561,17 @@ namespace SrcChess2 {
             UnlockBoard();
         }
 
-        /// <summary>
-        /// Make the computer play the next move
-        /// </summary>
-        /// <param name="flash"> true to flash moving position</param>
         private void PlayComputer(bool flash) {
             StartAsyncComputing();
             if (!m_chessCtl.FindBestMove(null, (x,y) => PlayComputerEnd(x, y), flash)) {
                 UnlockBoard();
             }
         }
-
-        /// <summary>
-        /// Make the computer play the next move
-        /// </summary>
-        /// <param name="flash"> true to flash moving position</param>
         private void PlayComputerAgainstComputer(bool flash) {
             m_playingMode = MainPlayingMode.ComputerPlayBoth;
             PlayComputer(flash);
         }
 
-        /// <summary>
-        /// Show the test result of a computer playing against a computer
-        /// </summary>
-        /// <param name="stat">  Statistic.</param>
         private void TestShowResult(BoardEvaluationStat stat) {
             string             msg;
             string             method1;
@@ -803,11 +602,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Play the next move when doing a board evaluation
-        /// </summary>
-        /// <param name="stat"> Board evaluation statistic</param>
-        /// <param name="move"> Move to be done</param>
         private void TestBoardEvaluation_PlayNextMove(BoardEvaluationStat stat, object? move) {
             ChessBoard.GameResult result;
             bool                  isSearchCancel;
@@ -856,11 +650,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Tests the computer playing against itself. Can be called asynchronously by a secondary thread.
-        /// </summary>
-        /// <param name="gameCount">          Number of games to play.</param>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
         private void TestBoardEvaluation(int gameCount, ChessSearchSetting chessSearchSetting) {
             BoardEvaluationStat stat;
 
@@ -874,22 +663,13 @@ namespace SrcChess2 {
             TestBoardEvaluation_StartNewGame(stat);
         }
 
-        /// <summary>
-        /// Show the hint move in the status bar
-        /// </summary>
-        /// <param name="isBeforeMove"> true if before showing the move, false if after</param>
-        /// <param name="move">         Move to show</param>
         private void ShowHintEnd(bool isBeforeMove, object? move) {
             if (isBeforeMove && move is MoveExt moveExt) {
                 ShowMoveInStatusBar(m_chessCtl.NextMoveColor, moveExt);
             } else {
                 UnlockBoard();
             }
-        }       
-
-        /// <summary>
-        /// Show a hint
-        /// </summary>
+        }
         private void ShowHint() {
             m_puzzleGameIndex = -1; // Hint means you didn't solve it by yourself
             StartAsyncComputing();
@@ -898,9 +678,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Toggle the design mode. In design mode, the user can create its own board
-        /// </summary>
         private void ToggleDesignMode() {
             if (PlayingMode == MainPlayingMode.DesignMode || MessageBox.Show(this, " Move list will be lost. Do you still want to switch to design mode?", "Design mode", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                 if (PlayingMode == MainPlayingMode.DesignMode) {
@@ -932,18 +709,12 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Close FICS connection if it's connected
-        /// </summary>
         private void CloseFicsIfConnected() {
             if (m_ficsConnection != null) {
                 DisconnectFromFics();
             }
         }
 
-        /// <summary>
-        /// Called when the game need to be reinitialized
-        /// </summary>
         private void NewGame() {
             if (!CheckIfDirty()) {
                 if (FrmGameParameter.AskGameParameter(this, m_chessSearchSetting, m_boardEvalUtil)) {
@@ -955,9 +726,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Load a puzzle
-        /// </summary>
         private void LoadPuzzle() {
             FrmLoadPuzzle frm;
             PgnGame       game;
@@ -986,10 +754,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Set player header for FICS usage
-        /// </summary>
-        /// <param name="game"> FICS Games or null to reset to normal header</param>
         private void SetFicsHeader(FicsInterface.FicsGame? game) {
             if (game != null) {
                 m_toolbar.labelWhitePlayerName.Content       = $"({game.WhitePlayerName}) :";
@@ -1013,9 +777,7 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Disconnect from the FICS Chess Server
-        /// </summary>
+        //not used
         private void DisconnectFromFics() {
             if (m_ficsConnection != null) {
                 m_ficsConnection.Dispose();
@@ -1024,9 +786,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Cancel the auto-play
-        /// </summary>
         private void CancelAutoPlay() {
             if (m_chessCtl.IsObservingAGame) {
                 m_ficsConnection!.TerminateObservation(m_chessCtl);
@@ -1036,19 +795,12 @@ namespace SrcChess2 {
                 ChessBoardControl.CancelSearch();
             }
         }
-
-        /// <summary>
-        /// Toggle the player vs player mode.
-        /// </summary>
         private void SelectPlayers() {
             if (FrmGameParameter.AskGameParameter(this, m_chessSearchSetting, m_boardEvalUtil)) {
                 StartAutomaticMove();
             }
         }
 
-        /// <summary>
-        /// Specifies the search mode
-        /// </summary>
         private void ShowManualSearchSetting() {
             FrmSearchMode frm;
 
@@ -1060,9 +812,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Test board evaluation routine
-        /// </summary>
         private void TestBoardEvaluation() {
             FrmTestBoardEval    frm;
             ChessSearchSetting  chessSearchSetting;
@@ -1081,24 +830,14 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Do the move which are done by the computer
-        /// </summary>
-        /// <param name="flashing">    true to flash moving pieces</param>
         private void DoAutomaticMove(bool flashing) {
             if (IsComputerMustPlay) {
                 PlayComputer(flashing);
             }
         }
 
-        /// <summary>
-        /// Do the move which are done by the computer
-        /// </summary>
         private void DoAutomaticMove() => DoAutomaticMove(m_chessCtl.MoveFlashing);
 
-        /// <summary>
-        /// Start automatic move mode when a new game is started
-        /// </summary>
         private void StartAutomaticMove() {
             if (m_playingMode == MainPlayingMode.ComputerPlayBoth) {
                 PlayComputerAgainstComputer(m_chessCtl.MoveFlashing);
@@ -1107,32 +846,13 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Toggle PGN/Move notation
-        /// </summary>
-        private void TogglePgnNotation() {
-            //bool isPgnNotationChecked;
-            
-            //isPgnNotationChecked     = mnuOptionPgnNotation.IsChecked;
-            //m_moveViewer.DisplayMode = (isPgnNotationChecked) ? MoveViewer.ViewerDisplayMode.Pgn : MoveViewer.ViewerDisplayMode.MovePos;
-        }
-
-        /// <summary>
-        /// Toggle Flash piece
-        /// </summary>
         private void ToggleFlashPiece() => m_chessCtl.MoveFlashing = mnuOptionFlashPiece.IsChecked;
 
-        /// <summary>
-        /// Toggle IsBoardReversed properties
-        /// </summary>
         private void ToggleReversedBoard() {
             m_chessCtl.IsBoardReversed        = !m_chessCtl.IsBoardReversed;
             mnuOptionsReversedBoard.IsChecked = m_chessCtl.IsBoardReversed;
         }
 
-        /// <summary>
-        /// Choose board setting
-        /// </summary>
         private void ChooseBoardSetting() {
             FrmBoardSetting frm;
 
@@ -1158,11 +878,6 @@ namespace SrcChess2 {
         #endregion
 
         #region Sink
-        /// <summary>
-        /// Called each second for timer click
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         private void DispatcherTimer_Tick(object? sender, EventArgs e) {
             GameTimer gameTimer;
             int       threadCount = GetSearchThreadRunningCount;
@@ -1181,18 +896,8 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called to gets the selected piece for design mode
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         private void ChessCtl_QueryPiece(object sender, ChessBoardControl.QueryPieceEventArgs e) => e.PieceType = m_lostPieceBlack.SelectedPiece;
 
-        /// <summary>
-        /// Called to gets the type of pawn promotion for the current move
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         private void ChessCtl_QueryPawnPromotionType(object sender, ChessBoardControl.QueryPawnPromotionTypeEventArgs e) {
             FrmQueryPawnPromotionType frm;
 
@@ -1203,25 +908,8 @@ namespace SrcChess2 {
             e.PawnPromotionType = frm.PromotionType;
         }
 
-        /// <summary>
-        /// Called when FindBestMove finished its job
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void ChessCtl_FindMoveBegin(object? sender, EventArgs e) => m_toolbar.StartProgressBar();
-
-        /// <summary>
-        /// Called when FindBestMove begin its job
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void ChessCtl_FindMoveEnd(object? sender, EventArgs e) => m_toolbar.EndProgressBar();
-
-        /// <summary>
-        /// Called when a new move has been done in the chessboard control
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ChessCtl_NewMove(object? sender, ChessBoardControl.NewMoveEventArgs e) {
             MoveExt                move;
             ChessBoard.PlayerColor moveColor;
@@ -1233,11 +921,6 @@ namespace SrcChess2 {
             DoAutomaticMove();
         }
 
-        /// <summary>
-        /// Called when a move is selected in the MoveViewer
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         private void MoveViewer_NewMoveSelected(object? sender, MoveViewer.NewMoveSelectedEventArg e) {
             ChessBoard.GameResult result;
 
@@ -1250,18 +933,8 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when the user has selected a valid move
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         void ChessCtl_MoveSelected(object? sender, ChessBoardControl.MoveSelectedEventArgs e) => m_chessCtl.DoUserMove(e.Move);
 
-        /// <summary>
-        /// Called when the state of the commands need to be refreshed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event handler</param>
         private void ChessCtl_UpdateCmdState(object? sender, EventArgs e) {
             m_lostPieceBlack.Refresh();
             m_lostPieceWhite.Refresh();
@@ -1269,5 +942,5 @@ namespace SrcChess2 {
         }
         #endregion
 
-    } // Class MainWindow
-} // Namespace
+    }
+}

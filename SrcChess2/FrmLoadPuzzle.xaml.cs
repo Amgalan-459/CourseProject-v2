@@ -9,40 +9,16 @@ using SrcChess2.Core;
 using SrcChess2.PgnParsing;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Interaction logic for frmLoadPuzzle.xaml
-    /// </summary>
     public partial class FrmLoadPuzzle : Window {
-
-        /// <summary>
-        /// Puzzle item class use to fill the listview
-        /// </summary>
-        /// <remarks>
-        /// Ctor
-        /// </remarks>
-        /// <param name="id">           Puzzle id</param>
-        /// <param name="description">  Description</param>
-        /// <param name="isDone">       true if already been done</param>
         public class PuzzleItem(int id, string description, bool isDone) {
-            /// <summary>Puzzle id</summary>
             public int    Id { get; private set; } = id;
-            /// <summary>Puzzle description</summary>
             public string Description { get; private set; } = description;
-            /// <summary>true if this puzzle has been done</summary>
             public bool   Done { get; set; } = isDone;
         }
 
-        /// <summary>List of PGN Games</summary>
         static private List<PgnGame>? m_pgnGameList;
-        /// <summary>PGN parser</summary>
         private readonly PgnParser    m_pgnParser;
-        /// <summary>Done mask</summary>
         private readonly long[]?      m_doneMask;
-
-        /// <summary>
-        /// Ctor
-        /// </summary>
-        /// <param name="doneMask">   Mask of game which has been done</param>
         public FrmLoadPuzzle(long[]? doneMask) {
             List<PuzzleItem> puzzleItemList;
             PuzzleItem       puzzleItem;
@@ -71,15 +47,8 @@ namespace SrcChess2 {
             listViewPuzzle.SelectedIndex = 0;
         }
 
-        /// <summary>
-        /// Ctor
-        /// </summary>
         public FrmLoadPuzzle() : this(null) {}
 
-        /// <summary>
-        /// Load PGN text from resource
-        /// </summary>
-        /// <returns>PGN text</returns>
         private string LoadPgn() {
             string                 retVal;
             Assembly               assem;
@@ -98,9 +67,6 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Build a list of puzzles using the PGN find in resource
-        /// </summary>
         private void BuildPuzzleList() {
             string  pgn;
 
@@ -109,9 +75,6 @@ namespace SrcChess2 {
             m_pgnGameList = m_pgnParser.GetAllRawPgn(getAttrList: true, getMoveList: false, out int _);
         }
 
-        /// <summary>
-        /// Gets the selected game
-        /// </summary>
         public PgnGame Game {
             get {
                 PgnGame retVal;
@@ -124,30 +87,12 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Returns the selected game index
-        /// </summary>
         public int GameIndex => listViewPuzzle.SelectedIndex;
 
-        /// <summary>
-        /// Called when the OK button is pressed
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ButOk_Click(object sender, RoutedEventArgs e) => DialogResult = true;
 
-        /// <summary>
-        /// Called when the Cancel button is pressed
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ButCancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
-        /// <summary>
-        /// Called when the Reset Done button is pressed
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ButResetDone_Click(object sender, RoutedEventArgs e) {
             List<PuzzleItem> puzzleItemList;
 
@@ -164,22 +109,12 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when a selection is changed
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ListViewPuzzle_SelectionChanged(object sender, SelectionChangedEventArgs e) => butOk.IsEnabled = listViewPuzzle.SelectedIndex != -1;
 
-        /// <summary>
-        /// Called when a selection is double clicked
-        /// </summary>
-        /// <param name="sender">   Sender object</param>
-        /// <param name="e">        Event arguments</param>
         private void ListViewPuzzle_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (listViewPuzzle.SelectedIndex != -1) {
                 DialogResult = true;
             }
         }
-    } // Class frmLoadPuzzle
-} // Namespace
+    }
+}

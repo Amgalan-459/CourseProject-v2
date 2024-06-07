@@ -59,8 +59,7 @@ namespace LoginWPF
             loginTextBox.Text = string.Empty;
             passwordBox.Password = string.Empty;
 
-            PlayWindow playWindow = new();
-            playWindow.DataContext = user;
+            PlayWindow playWindow = new(user);
             playWindow.Show();
         }
 

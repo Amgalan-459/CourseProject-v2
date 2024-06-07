@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -21,64 +22,13 @@ namespace LoginWPF
     public partial class PlayWindow : Window
     {
         public Button[,] Buttons = new Button[8, 8];
-        public PlayWindow()
+        public PlayWindow(User user)
         {
             InitializeComponent();
 
 
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    Button b = new();
-                    b.Click += B_Click;
-
-                    if (i % 2 != j % 2)
-                        b.Background = Brushes.White;
-                    else
-                        b.Background = Brushes.Brown;
-
-                    b.Height = 50;
-                    b.Width = 50;
-                    Buttons[i, j] = b;
-                    field.Children.Add(Buttons[i, j]);
-                }
-            }
-
-        }
-
-        private void B_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.MessageBox.Show("Field");
-        }
-
-        private void NewGameButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.MessageBox.Show("New game");
-        }
-
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            field.Children.Clear();
-
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    Button b = new();
-                    b.Click += B_Click;
-
-                    if (i % 2 != j % 2)
-                        b.Background = Brushes.White;
-                    else
-                        b.Background = Brushes.Brown; //при замене цвета можно использовать черно/белый
-
-                    b.Height = 50;
-                    b.Width = 50;
-                    Buttons[i, j] = b;
-                    field.Children.Add(Buttons[i, j]);
-                }
-
-            System.Windows.Forms.MessageBox.Show("Field cleared");
+            username.Text = $"Добро пожаловать, {user.Name}!";
+            rating.Text = $"Рейтинг: {user.Rating}";
         }
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
@@ -92,6 +42,11 @@ namespace LoginWPF
             this.Visibility = Visibility.Hidden;
             game.ShowDialog();
             this.Visibility = Visibility.Visible;
+        }
+
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

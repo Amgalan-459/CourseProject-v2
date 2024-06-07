@@ -2,28 +2,12 @@
 using SrcChess2.Core;
 
 namespace SrcChess2 {
-    /// <summary>
-    /// Pickup Game Parameter from the player
-    /// </summary>
     public partial class FrmGameParameter : Window {
-        /// <summary>Parent Window</summary>
         private readonly MainWindow          m_parentWindow = null!;
-        /// <summary>Utility class to handle board evaluation objects</summary>
         private readonly BoardEvaluationUtil m_boardEvalUtil = null!;
-        /// <summary>Search mode</summary>
         private readonly ChessSearchSetting  m_chessSearchSetting = null!;
-
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public FrmGameParameter() => InitializeComponent();
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="parent">             Parent Window</param>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
-        /// <param name="boardEvalUtil">      Utility class to handle board evaluation objects</param>
         private FrmGameParameter(MainWindow parent, ChessSearchSetting chessSearchSetting, BoardEvaluationUtil boardEvalUtil) : this() {
             m_parentWindow       = parent;
             m_chessSearchSetting = chessSearchSetting;
@@ -81,20 +65,11 @@ namespace SrcChess2 {
             radioButtonLevel5.ToolTip      = chessSearchSetting.HumanSearchMode(ChessSearchSetting.SettingDifficultyLevel.VeryHard);
             radioButtonLevelManual.ToolTip = chessSearchSetting.HumanSearchMode(ChessSearchSetting.SettingDifficultyLevel.Manual);
         }
-
-        /// <summary>
-        /// Check the state of the group box
-        /// </summary>
         private void CheckState() {
             groupBoxComputerPlay.IsEnabled = radioButtonPlayerAgainstComputer.IsChecked!.Value;
             butUpdManual.IsEnabled         = radioButtonLevelManual.IsChecked == true;
         }
 
-        /// <summary>
-        /// Called to accept the form
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void ButOk_Click(object sender, RoutedEventArgs e) {
             if (radioButtonPlayerAgainstComputer.IsChecked == true) {
                 m_parentWindow!.PlayingMode = (radioButtonComputerPlayBlack.IsChecked == true) ? MainWindow.MainPlayingMode.ComputerPlayBlack : MainWindow.MainPlayingMode.ComputerPlayWhite;
@@ -106,12 +81,6 @@ namespace SrcChess2 {
             DialogResult = true;
             Close();
         }
-
-        /// <summary>
-        /// Called to open the manual setting
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void ButUpdManual_Click(object sender, RoutedEventArgs e) {
             FrmSearchMode frm;
 
@@ -123,29 +92,9 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when the radio button value is changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void RadioButtonOpponent_CheckedChanged(object sender, RoutedEventArgs e) => CheckState();
-
-        /// <summary>
-        /// Called when the radio button value is changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void RadioButtonLevelManual_CheckedChanged(object sender, RoutedEventArgs e) => CheckState();
 
-        /// <summary>
-        /// Ask for the game parameter
-        /// </summary>
-        /// <param name="parent">             Parent window</param>
-        /// <param name="chessSearchSetting"> Chess search setting</param>
-        /// <param name="boardEvalUtil">      Utility class to handle board evaluation objects</param>
-        /// <returns>
-        /// true if succeed
-        /// </returns>
         public static bool AskGameParameter(MainWindow parent, ChessSearchSetting chessSearchSetting, BoardEvaluationUtil boardEvalUtil) {
             bool             retVal;
             FrmGameParameter frm;
@@ -173,5 +122,5 @@ namespace SrcChess2 {
             return retVal;
         }
 
-    } // Class FrmGameParameter
-} // Namespace
+    }
+}

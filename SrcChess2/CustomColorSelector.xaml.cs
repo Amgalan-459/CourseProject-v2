@@ -9,21 +9,11 @@ using System.Windows.Media.Imaging;
 using System.Reflection;
 
 namespace SrcChess2 {   
-
-    /// <summary>
-    /// Color Picker
-    /// </summary>
     public partial class ColorPicker : UserControl {
-        /// <summary>true if mouse button is down over the elipse</summary>
         private bool    m_isMouseDownOverEllipse = false;
-        /// <summary>true if shift is down</summary>
         private bool    m_shift = false;
-        /// <summary>Custom color</summary>
         private Color   m_customColor = Colors.Transparent;
-       
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
+
         public ColorPicker() {
             InitializeComponent();
             InitialWork();
@@ -45,9 +35,6 @@ namespace SrcChess2 {
             EpPointer.MouseLeftButtonUp   += new MouseButtonEventHandler(EpPointer_MouseLeftButtonUp);
         }
         
-        /// <summary>
-        /// Class Ctor
-        /// </summary>
         public Color CustomColor {
             get => m_customColor;
             set {
@@ -58,42 +45,15 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when the left mouse button is released
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void EpPointer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => m_isMouseDownOverEllipse = false;
 
-        /// <summary>
-        /// Called when the left mouse button is released
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void CanColor_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => e.Handled = true;
 
-        /// <summary>
-        /// Called when the left mouse button is pressed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void CanColor_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             ChangeColor();
             e.Handled = true;
         }
-
-        /// <summary>
-        /// Called when the left mouse button is pressed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void EpPointer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => m_isMouseDownOverEllipse = true;
-
-        /// <summary>
-        /// Called when the left mouse is moved
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void EpPointer_MouseMove(object sender, MouseEventArgs e) {
             if (m_isMouseDownOverEllipse) {
                 ChangeColor();
@@ -101,11 +61,6 @@ namespace SrcChess2 {
             e.Handled = true;
         }
 
-        /// <summary>
-        /// Called when a key is down
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         public void TxtAll_KeyDown(object sender, KeyEventArgs e) {           
 
             if (e.Key == Key.Enter) {
@@ -139,48 +94,24 @@ namespace SrcChess2 {
                 e.Handled = true;
             }
         }
-
-        /// <summary>
-        /// Called when a key is down
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void TxtB_KeyDown(object sender, KeyEventArgs e) {
             NumericValidation(e);
             if (e.Key == Key.Tab) {
                 txtAll.Focus();
             }
         }
-
-        /// <summary>
-        /// Called when a key is down
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void TxtG_KeyDown(object sender, KeyEventArgs e) {
             NumericValidation(e);
             if (e.Key == Key.Tab) {
                 txtB.Focus();
             }
         }
-
-        /// <summary>
-        /// Called when a key is pressed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void TxtR_KeyDown(object sender, KeyEventArgs e) {
             NumericValidation(e);
             if (e.Key == Key.Tab) {
                 txtG.Focus();
             }
         }
-
-        /// <summary>
-        /// Called when a key is pressed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void TxtAlpha_KeyDown(object sender, KeyEventArgs e) {
             NumericValidation(e);
             if (e.Key == Key.Tab) {
@@ -188,11 +119,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Called when a key is pressed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void TxtAll_TextChanged(object sender, RoutedEventArgs e) {
             try {
                 if (string.IsNullOrEmpty(((TextBox)sender).Text)) return;
@@ -201,10 +127,6 @@ namespace SrcChess2 {
             } catch {}
         }
 
-        /// <summary>
-        /// Gets the color from the sender object
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
         private Color MakeColorFromHex(object sender) {
             try {
                 ColorConverter cc = new();
@@ -219,11 +141,6 @@ namespace SrcChess2 {
             return m_customColor;
         }
 
-        /// <summary>
-        /// Called when the text has changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void Txt_TextChanged(object sender, RoutedEventArgs e) {
             if (!string.IsNullOrEmpty(((TextBox)sender).Text)) {
                 if (int.TryParse(((TextBox)sender).Text, out int val)) {
@@ -239,10 +156,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Gets the color from the text control
-        /// </summary>
-        /// <param name="color"> Returned color</param>
         private bool MakeColorFromRGB(out Color color) {
             bool retVal;
             byte rbyteValue = 0;
@@ -257,10 +170,6 @@ namespace SrcChess2 {
             return retVal;
         }
 
-        /// <summary>
-        /// Validate the value of the text control
-        /// </summary>
-        /// <param name="e"> Event arguments</param>
         private void NumericValidation(KeyEventArgs e){
             string input;
 
@@ -282,23 +191,12 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Load the bitmap
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns>
-        /// Bitmap source
-        /// </returns>
         public static BitmapSource LoadBitmap(System.Drawing.Bitmap source) 
             => System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(source.GetHbitmap(),
                                                                             IntPtr.Zero,
                                                                             Int32Rect.Empty,
                                                                             BitmapSizeOptions.FromEmptyOptions());
 
-
-        /// <summary>
-        /// Do the initial work
-        /// </summary>
         private void InitialWork() {
             DefaultPicker.Items.Clear();
             CustomColors customColors = new();
@@ -308,11 +206,6 @@ namespace SrcChess2 {
             DefaultPicker.SelectionChanged += new SelectionChangedEventHandler(DefaultPicker_SelectionChanged);
         }
 
-        /// <summary>
-        /// Called when the selection of the default picker changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void DefaultPicker_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (DefaultPicker.SelectedValue != null) {
                 m_customColor = (Color)DefaultPicker.SelectedValue;
@@ -331,9 +224,6 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// Change the color
-        /// </summary>
         private void ChangeColor() {
             try {
                 CustomColor = GetColorFromImage((int)Mouse.GetPosition(CanColor).X, (int)Mouse.GetPosition(CanColor).Y);                
@@ -360,10 +250,8 @@ namespace SrcChess2 {
             }
         }
 
-        /// <summary>
-        /// 1*1 pixel copy is based on an article by Lee Brimelow    
-        /// http://thewpfblog.com/?p=62
-        /// </summary>
+        // 1*1 pixel copy is based on an article by Lee Brimelow    
+        // http://thewpfblog.com/?p=62
         private Color GetColorFromImage(int i, int j) {
             CroppedBitmap cb = new(image.Source as BitmapSource, new Int32Rect(i, j, 1, 1));
             byte[] color = new byte[4];
@@ -372,11 +260,6 @@ namespace SrcChess2 {
             return Colorfromimagepoint;
         }
 
-        /// <summary>
-        /// Move the pointer during reposition
-        /// </summary>
-        /// <param name="i"></param>
-        /// <param name="j"></param>
         private void MovePointerDuringReposition(int i, int j){
             EpPointer.SetValue(Canvas.LeftProperty, (double)(i - 3));
             EpPointer.SetValue(Canvas.TopProperty, (double)(j - 3));
@@ -384,27 +267,15 @@ namespace SrcChess2 {
             CanColor.InvalidateVisual();
         }
 
-        /// <summary>
-        /// Move the pointer
-        /// </summary>
         private void MovePointer() {
             EpPointer.SetValue(Canvas.LeftProperty, (double)(Mouse.GetPosition(CanColor).X - 5));
             EpPointer.SetValue(Canvas.TopProperty,  (double)(Mouse.GetPosition(CanColor).Y - 5));
             CanColor.InvalidateVisual();
         }
 
-        /// <summary>
-        /// Determine if the two color are similar
-        /// </summary>
-        /// <param name="pointColor">   Color pointed</param>
-        /// <param name="selectedColor">Selected color</param>
-        /// <returns></returns>
         private static bool SimmilarColor(Color pointColor, Color selectedColor)
             => Math.Abs(pointColor.R - selectedColor.R) + Math.Abs(pointColor.G - selectedColor.G) + Math.Abs(pointColor.B - selectedColor.B) < 20;
 
-        /// <summary>
-        /// Update the preview
-        /// </summary>
         private void UpdatePreview() {
             lblPreview.Background   = new SolidColorBrush(CustomColor);
             txtAlpha.Text           = CustomColor.A.ToString();
@@ -418,34 +289,14 @@ namespace SrcChess2 {
             txtAll.Text             = string.Format("#{0}{1}{2}{3}", alphaHex, redHex, greenHex, blueHex);
             SdA.Value               = CustomColor.A;
         }
-
-        /// <summary>
-        /// Called when the left mouse button is down
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void EpDefaultcolor_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => epCustomcolor.IsExpanded = false;
 
-
-        /// <summary>
-        /// Called when the custom color is expanded
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void EpCustomcolor_Expanded(object sender, RoutedEventArgs e) => epDefaultcolor.IsExpanded = false;
 
-        /// <summary>
-        /// Called when the slier value changed
-        /// </summary>
-        /// <param name="sender"> Sender object</param>
-        /// <param name="e">      Event arguments</param>
         private void SdA_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
             => CustomColor = Color.FromArgb((byte)SdA.Value, CustomColor.R, CustomColor.G, CustomColor.B);
     }
 
-    /// <summary>
-    /// Custom colors
-    /// </summary>
     class CustomColors {
         public List<Color> SelectableColors { get; set; } = [];
 
@@ -459,34 +310,11 @@ namespace SrcChess2 {
         }
 
     }
-
-    /// <summary>
-    /// Converter
-    /// </summary>
+    // Converter
     [ValueConversion(typeof(Color), typeof(Brush))]
     public class ColorToSolidColorBrushConverter : IValueConverter {
         #region IValueConverter Members
-
-        /// <summary>
-        /// Convert
-        /// </summary>
-        /// <param name="value">      Value to convert</param>
-        /// <param name="targetType"> Target type</param>
-        /// <param name="parameter">  Parameter</param>
-        /// <param name="culture">    Culture</param>
-        /// <returns>
-        /// Convert a color to a brush
-        /// </returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => new SolidColorBrush((Color)value);
-
-        /// <summary>
-        /// Convert back
-        /// </summary>
-        /// <param name="value">      Value to convert</param>
-        /// <param name="targetType"> Target type</param>
-        /// <param name="parameter">  Parameter</param>
-        /// <param name="culture">    Culture</param>
-        /// <returns>Convert a brush to a color</returns>
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => throw new NotImplementedException();
 
         #endregion

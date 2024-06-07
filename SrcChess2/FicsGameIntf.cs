@@ -7,9 +7,7 @@ using SrcChess2.FicsInterface;
 
 namespace SrcChess2 {
 
-    /// <summary>
-    /// Interface between a Chess Server and a chess control board
-    /// </summary>
+    //actually not used
     public class FicsGameIntf {
         /// <summary>Game being observed</summary>
         public  FicsGame                                          Game { get; }
