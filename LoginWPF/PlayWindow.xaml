@@ -5,18 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LoginWPF"
         mc:Ignorable="d"
-        Title="PlayWindow" Height="600" Width="800">
+        Title="PlayWindow" Height="300" Width="415">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <TabControl>
+        <!--<TabControl>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <!--<Image Source="#" Width="50" Height="50"/>-->
+                        --><!--<Image Source="#" Width="50" Height="50"/>--><!--
                         <TextBlock VerticalAlignment="Center" Text="Главное меню"/>
                     </StackPanel>
                 </TabItem.Header>
@@ -55,6 +55,35 @@
                     <TextBlock>Нажмите на кнопку чтобы открыть игру</TextBlock>
                 </StackPanel>
             </TabItem>
-        </TabControl>
+        </TabControl>-->
+
+        <StackPanel Orientation="Vertical" Width="400">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="username" TextAlignment="Center"/>
+                <TextBlock Grid.Column="1" x:Name="rating" TextAlignment="Center"/>
+                <Button Grid.Column="2" Click="QuitButton_Click">Quit</Button>
+            </Grid>
+
+            <Separator/>
+
+            <StackPanel Orientation="Vertical" Margin="10">
+                <Button Click="ConnectButton_Click">Игра по сети</Button>
+                <TextBlock TextAlignment="Center">нажмите кнопку чтобы открыть игру по сети</TextBlock>
+            </StackPanel>
+
+            <Separator/>
+
+            <StackPanel Margin="10">
+                <Button Click="NewOfflineGameButton_Click">Новая игра</Button>
+                <TextBlock TextAlignment="Center">Нажмите на кнопку чтобы открыть игру</TextBlock>
+            </StackPanel>
+        </StackPanel>
+        
+        
     </Grid>
 </Window>
