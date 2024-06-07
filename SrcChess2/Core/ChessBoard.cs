@@ -843,6 +843,7 @@ namespace SrcChess2.Core {
 
         public GameResult GetCurrentResult() => GetCurrentResult(MoveHistory.CurrentRepeatResult(ZobristKey));
 
+        //important
         public GameResult DoMove(MoveExt move) {
             GameResult   retVal;
             RepeatResult repeatResult;
