@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Figures", "Figures\Figures.csproj", "{A034389A-9806-4166-A133-0F42684AA053}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoginWPF", "LoginWPF\LoginWPF.csproj", "{1129E2B1-950F-4018-9922-A8D9F676B999}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DB", "DB\DB.csproj", "{81232A82-D463-4A41-A105-9EB29717851E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestChessWPF", "TestChessWPF\TestChessWPF.csproj", "{71DD137D-E37D-4067-AAFB-4F7D465136D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerChess", "ServerChess\ServerChess.csproj", "{88648D46-DE3B-4240-96D8-5A6D2128A6C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SrcChess2", "SrcChess2\SrcChess2.csproj", "{8E6CBC50-741D-48BC-9416-BE9B8035DF30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A034389A-9806-4166-A133-0F42684AA053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A034389A-9806-4166-A133-0F42684AA053}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A034389A-9806-4166-A133-0F42684AA053}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A034389A-9806-4166-A133-0F42684AA053}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1129E2B1-950F-4018-9922-A8D9F676B999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1129E2B1-950F-4018-9922-A8D9F676B999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1129E2B1-950F-4018-9922-A8D9F676B999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1129E2B1-950F-4018-9922-A8D9F676B999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81232A82-D463-4A41-A105-9EB29717851E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81232A82-D463-4A41-A105-9EB29717851E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81232A82-D463-4A41-A105-9EB29717851E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81232A82-D463-4A41-A105-9EB29717851E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71DD137D-E37D-4067-AAFB-4F7D465136D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71DD137D-E37D-4067-AAFB-4F7D465136D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71DD137D-E37D-4067-AAFB-4F7D465136D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71DD137D-E37D-4067-AAFB-4F7D465136D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88648D46-DE3B-4240-96D8-5A6D2128A6C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88648D46-DE3B-4240-96D8-5A6D2128A6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88648D46-DE3B-4240-96D8-5A6D2128A6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88648D46-DE3B-4240-96D8-5A6D2128A6C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E6CBC50-741D-48BC-9416-BE9B8035DF30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E6CBC50-741D-48BC-9416-BE9B8035DF30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E6CBC50-741D-48BC-9416-BE9B8035DF30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E6CBC50-741D-48BC-9416-BE9B8035DF30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D69ECEBE-55CD-4022-8F9F-9B03E803F38A}
+	EndGlobalSection
+EndGlobal

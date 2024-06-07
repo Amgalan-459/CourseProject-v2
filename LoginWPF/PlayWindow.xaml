@@ -1,0 +1,61 @@
+﻿<Window x:Class="LoginWPF.PlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LoginWPF"
+        mc:Ignorable="d"
+        Title="PlayWindow" Height="600" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <TabControl>
+            <TabItem HorizontalAlignment="Left">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">                        
+                        <!--<Image Source="#" Width="50" Height="50"/>-->
+                        <TextBlock VerticalAlignment="Center" Text="Главное меню"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <Image Source="C:\Users\Админ\.vscode\extensions\ms-dotnettools.csharp-2.23.15-win32-x64\images\csharpIcon.png"/>
+            </TabItem>
+
+            <TabItem HorizontalAlignment="Left">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <!--<Image Source="#" Width="50" Height="50"/>-->
+                        <TextBlock VerticalAlignment="Center" Text="Поле"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <!--<Image Source="C:\Users\Админ\.vscode\extensions\ms-vscode.cpptools-1.19.9-win32-x64\LanguageCCPP_color_128x.png"/>-->
+                <StackPanel>                    
+                    <WrapPanel x:Name="field" Width="400" Height="400" Margin="30"/>
+                    <StackPanel Orientation="Horizontal" Margin="30 0">
+                        <Button Click="NewGameButton_Click" Margin="10">Новая игра</Button>
+                        <Button Click="ClearButton_Click" Margin="10">Очистить</Button>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem HorizontalAlignment="Left">
+                <TabItem.Header>
+                    <TextBlock VerticalAlignment="Center" Text="Игра по сети"/>
+                </TabItem.Header>
+                <StackPanel Orientation="Vertical">
+                    <Button Click="ConnectButton_Click">Игра по сети</Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem HorizontalAlignment="Left">
+                <TabItem.Header>
+                    <TextBlock VerticalAlignment="Center" Text="Игра с ботом и с человеком"/>
+                </TabItem.Header>
+                <StackPanel Margin="10">
+                    <Button Click="NewOfflineGameButton_Click">Новая игра</Button>
+                    <TextBlock>Нажмите на кнопку чтобы открыть игру</TextBlock>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
