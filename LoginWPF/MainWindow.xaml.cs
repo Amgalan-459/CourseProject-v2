@@ -117,42 +117,17 @@ namespace LoginWPF
             await smtpClient.SendMailAsync(message);
             System.Windows.Forms.MessageBox.Show("Письмо отправлено", "Успех");
 
-            //тут открывает новое окно
+
+            PasswordConiform coniform = new(msg);
+            if (coniform.ShowDialog() == true)
+            {
+                System.Windows.Forms.MessageBox.Show($"Добро пожаловать, {user.Name}!");
+                loginTextBox.Text = string.Empty;
+                passwordBox.Password = string.Empty;
+
+                PlayWindow playWindow = new(user);
+                playWindow.Show();
+            }
         }
-
-        //private async Task<User> CheckUser()
-        //{
-        //    if (string.IsNullOrEmpty(loginTextBox.Text))
-        //    {
-        //        System.Windows.Forms.MessageBox.Show("Введите имя!", "Ошибка",
-        //            System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-        //        return null;
-        //    }
-        //    if (string.IsNullOrEmpty(passwordBox.Password))
-        //    {
-        //        System.Windows.Forms.MessageBox.Show("Введите пароль!", "Ошибка",
-        //            System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    using GameDbContext db = new();
-        //    User? user = await db.Users
-        //        .Where(u => u.UserName == loginTextBox.Text && u.Password == passwordBox.Password)
-        //        .FirstOrDefaultAsync();
-        //    IEnumerable<User> users = db.Users;
-
-        //    if (user is null)
-        //    {
-        //        System.Windows.Forms.MessageBox.Show("Неверный логин или пароль!", "Ошибка",
-        //            System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    System.Windows.Forms.MessageBox.Show($"Добро пожаловать, {user.Name}!");
-        //    loginTextBox.Text = string.Empty;
-        //    passwordBox.Password = string.Empty;
-
-        //    return user;
-        //}
     }
 }
