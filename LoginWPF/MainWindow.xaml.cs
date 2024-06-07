@@ -114,8 +114,17 @@ namespace LoginWPF
             smtpClient.EnableSsl = true;
             message.Body = $@"<h1>Код: {msg}</h1>";
 
-            await smtpClient.SendMailAsync(message);
-            System.Windows.Forms.MessageBox.Show("Письмо отправлено", "Успех");
+            try
+            {
+                await smtpClient.SendMailAsync(message);
+                System.Windows.Forms.MessageBox.Show("Письмо отправлено", "Успех");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Письмо не отправлено", "Ошибка");
+                System.Windows.Forms.MessageBox.Show(ex.Message); //это можно в логи для сисадмина
+                return;
+            }
 
 
             PasswordConiform coniform = new(msg);
